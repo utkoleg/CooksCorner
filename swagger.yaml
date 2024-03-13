@@ -1,0 +1,442 @@
+openapi: 3.0.0
+info:
+  title: CooksCorner API
+  version: 1.0.0
+  description: API for managing recipes, users, and authentication in CooksCorner.
+servers:
+  - url: /cookscorner
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        200:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+
+  /auth/authenticate:
+    post:
+      summary: Authenticate a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+      responses:
+        200:
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+
+  /auth/activate:
+    get:
+      summary: Activate a user account
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User account activated
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /auth/reset-password:
+    post:
+      summary: Request a password reset
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Password reset email sent
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /auth/update-password:
+    post:
+      summary: Update user password
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Password updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /auth/update-bio:
+    post:
+      summary: Update user bio
+      parameters:
+        - name: bio
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Bio updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /auth/update-image:
+    post:
+      summary: Update user profile image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                id:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: Image updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+
+  /recipe:
+    get:
+      summary: Get all recipes
+      responses:
+        200:
+          description: List of recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+
+    post:
+      summary: Add a new recipe
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                difficulty:
+                  type: string
+                category:
+                  type: string
+                preparationTime:
+                  type: string
+                listOfIngredients:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ingredient'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Recipe added successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uuid
+
+  /recipe/category:
+    get:
+      summary: Get recipes by category
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of recipes in the specified category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+
+  /recipe/{id}:
+    get:
+      summary: Get a specific recipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Recipe details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeResponseDTO'
+
+  /{id}:
+    get:
+      summary: Get a specific user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+
+    post:
+      summary: Follow a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: User followed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthenticationRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+        category:
+          type: string
+        preparationTime:
+          type: integer
+        imageUrl:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        quantity:
+          type: integer
+        measurement:
+          type: string
+
+    RecipeResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          $ref: '#/components/schemas/Difficulty'
+        category:
+          type: string
+        preparationTime:
+          type: integer
+        imageUrl:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+
+    UserResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        imageUrl:
+          type: string
+        bio:
+          type: string
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        savedRecipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    Difficulty:
+      type: string
+      enum:
+        - EASY
+        - MEDIUM
+        - HARD
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        imageUrl:
+          type: string
+        bio:
+          type: string
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        savedRecipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        followers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        following:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        role:
+          $ref: '#/components/schemas/Role'
+        enabled:
+          type: boolean
+        activationToken:
+          type: string
+        passwordResetToken:
+          type: string
+
+    Role:
+      type: string
+      enum:
+        - USER
+        - ADMIN

@@ -1,0 +1,995 @@
+openapi: 3.0.0
+info:
+  description: "API for managing recipes, users, and authentication in CooksCorner."
+  title: CooksCorner API
+  version: 1.0.0
+servers:
+- url: /cookscorner
+paths:
+  /auth/register:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+          description: User registered successfully
+      summary: Register a new user
+      x-content-type: application/json
+      x-accepts: application/json
+  /auth/authenticate:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+          description: User authenticated successfully
+      summary: Authenticate a user
+      x-content-type: application/json
+      x-accepts: application/json
+  /auth/activate:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: User account activated
+      summary: Activate a user account
+      x-accepts: text/plain
+  /auth/reset-password:
+    post:
+      parameters:
+      - explode: true
+        in: query
+        name: email
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Password reset email sent
+      summary: Request a password reset
+      x-accepts: text/plain
+  /auth/update-password:
+    post:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: password
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Password updated successfully
+      summary: Update user password
+      x-accepts: text/plain
+  /auth/update-bio:
+    post:
+      parameters:
+      - explode: true
+        in: query
+        name: bio
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Bio updated successfully
+      summary: Update user bio
+      x-accepts: text/plain
+  /auth/update-image:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_auth_update_image_post_request'
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Image updated successfully
+      summary: Update user profile image
+      x-content-type: multipart/form-data
+      x-accepts: text/plain
+  /recipe:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Recipe'
+                type: array
+          description: List of recipes
+      summary: Get all recipes
+      x-accepts: application/json
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_recipe_get_request'
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                format: uuid
+                type: string
+          description: Recipe added successfully
+      summary: Add a new recipe
+      x-content-type: multipart/form-data
+      x-accepts: text/plain
+  /recipe/category:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Recipe'
+                type: array
+          description: List of recipes in the specified category
+      summary: Get recipes by category
+      x-accepts: application/json
+  /recipe/{id}:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeResponseDTO'
+          description: Recipe details
+      summary: Get a specific recipe
+      x-accepts: application/json
+  /{id}:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: User details
+      summary: Get a specific user
+      x-accepts: application/json
+    post:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: userId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDTO'
+          description: User followed successfully
+      summary: Follow a user
+      x-accepts: application/json
+components:
+  schemas:
+    RegisterRequest:
+      example:
+        password: password
+        email: email
+        username: username
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    AuthenticationRequest:
+      example:
+        password: password
+        username: username
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      type: object
+    AuthenticationResponse:
+      example:
+        token: token
+      properties:
+        token:
+          type: string
+      type: object
+    Recipe:
+      example:
+        difficulty: difficulty
+        imageUrl: imageUrl
+        name: name
+        preparationTime: 0
+        description: description
+        ingredients:
+        - quantity: 6
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          measurement: measurement
+        - quantity: 6
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          measurement: measurement
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        category: category
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+        category:
+          type: string
+        preparationTime:
+          type: integer
+        imageUrl:
+          type: string
+        ingredients:
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          type: array
+      type: object
+    Ingredient:
+      example:
+        quantity: 6
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        measurement: measurement
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        quantity:
+          type: integer
+        measurement:
+          type: string
+      type: object
+    RecipeResponseDTO:
+      example:
+        difficulty: null
+        imageUrl: imageUrl
+        name: name
+        preparationTime: 0
+        description: description
+        ingredients:
+        - quantity: 6
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          measurement: measurement
+        - quantity: 6
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          measurement: measurement
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        category: category
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          $ref: '#/components/schemas/Difficulty'
+        category:
+          type: string
+        preparationTime:
+          type: integer
+        imageUrl:
+          type: string
+        ingredients:
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          type: array
+      type: object
+    UserResponseDTO:
+      example:
+        recipes:
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        followers:
+        - recipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          role: null
+          bio: bio
+          passwordResetToken: passwordResetToken
+          enabled: true
+          password: password
+          followers:
+          - null
+          - null
+          imageUrl: imageUrl
+          following:
+          - null
+          - null
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+          savedRecipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          activationToken: activationToken
+        - recipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          role: null
+          bio: bio
+          passwordResetToken: passwordResetToken
+          enabled: true
+          password: password
+          followers:
+          - null
+          - null
+          imageUrl: imageUrl
+          following:
+          - null
+          - null
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+          savedRecipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          activationToken: activationToken
+        imageUrl: imageUrl
+        following:
+        - recipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          role: null
+          bio: bio
+          passwordResetToken: passwordResetToken
+          enabled: true
+          password: password
+          followers:
+          - null
+          - null
+          imageUrl: imageUrl
+          following:
+          - null
+          - null
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+          savedRecipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          activationToken: activationToken
+        - recipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          role: null
+          bio: bio
+          passwordResetToken: passwordResetToken
+          enabled: true
+          password: password
+          followers:
+          - null
+          - null
+          imageUrl: imageUrl
+          following:
+          - null
+          - null
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          email: email
+          username: username
+          savedRecipes:
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          - difficulty: difficulty
+            imageUrl: imageUrl
+            name: name
+            preparationTime: 0
+            description: description
+            ingredients:
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            - quantity: 6
+              name: name
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              measurement: measurement
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            category: category
+          activationToken: activationToken
+        bio: bio
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        email: email
+        username: username
+        savedRecipes:
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+      properties:
+        id:
+          format: uuid
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        imageUrl:
+          type: string
+        bio:
+          type: string
+        recipes:
+          items:
+            $ref: '#/components/schemas/Recipe'
+          type: array
+        savedRecipes:
+          items:
+            $ref: '#/components/schemas/Recipe'
+          type: array
+        followers:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        following:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+      type: object
+    Difficulty:
+      enum:
+      - EASY
+      - MEDIUM
+      - HARD
+      type: string
+    User:
+      example:
+        recipes:
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        role: null
+        bio: bio
+        passwordResetToken: passwordResetToken
+        enabled: true
+        password: password
+        followers:
+        - null
+        - null
+        imageUrl: imageUrl
+        following:
+        - null
+        - null
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        email: email
+        username: username
+        savedRecipes:
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        - difficulty: difficulty
+          imageUrl: imageUrl
+          name: name
+          preparationTime: 0
+          description: description
+          ingredients:
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          - quantity: 6
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            measurement: measurement
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          category: category
+        activationToken: activationToken
+      properties:
+        id:
+          format: uuid
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        imageUrl:
+          type: string
+        bio:
+          type: string
+        recipes:
+          items:
+            $ref: '#/components/schemas/Recipe'
+          type: array
+        savedRecipes:
+          items:
+            $ref: '#/components/schemas/Recipe'
+          type: array
+        followers:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        following:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        role:
+          $ref: '#/components/schemas/Role'
+        enabled:
+          type: boolean
+        activationToken:
+          type: string
+        passwordResetToken:
+          type: string
+      type: object
+    Role:
+      enum:
+      - USER
+      - ADMIN
+      type: string
+    _auth_update_image_post_request:
+      properties:
+        image:
+          format: binary
+          type: string
+        id:
+          format: uuid
+          type: string
+      type: object
+    _recipe_get_request:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+        category:
+          type: string
+        preparationTime:
+          type: string
+        listOfIngredients:
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          type: array
+        image:
+          format: binary
+          type: string
+      type: object
+
