@@ -5,6 +5,7 @@ import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,21 +25,39 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping()
+    @Operation(summary = "Get all recipes", responses = {
+            @ApiResponse(responseCode = "200", description = "List of recipes",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class)))),
+    })
     public List<Recipe> getRecipes(){
         return recipeService.getRecipes();
     }
 
     @GetMapping("/category")
+    @Operation(summary = "Get recipes by category", responses = {
+            @ApiResponse(responseCode = "200", description = "List of recipes in the specified category",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class)))),
+    })
     public List<Recipe> getRecipesByCategory(@RequestParam(name = "id") String category){
         return recipeService.getRecipesByCategory(category);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a single recipe", responses = {
+            @ApiResponse(responseCode = "200", description = "Recipe details",
+                    content = @Content(schema = @Schema(implementation = RecipeResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Recipe not found")
+    })
     public RecipeResponseDTO getRecipe(@PathVariable(name = "id") UUID id){
         return recipeService.getRecipe(id);
     }
 
     @PostMapping()
+    @Operation(summary = "Add a new recipe", responses = {
+            @ApiResponse(responseCode = "200", description = "Recipe added successfully",
+                    content = @Content(schema = @Schema(implementation = UUID.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request data")
+    })
     public UUID addRecipe(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "description") String description,

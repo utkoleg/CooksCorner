@@ -21,11 +21,21 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user details", responses = {
+            @ApiResponse(responseCode = "200", description = "User details",
+                    content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public UserResponseDTO getUser(@PathVariable(name = "id") UUID id){
         return userService.getUser(id);
     }
 
     @PostMapping("/{id}")
+    @Operation(summary = "Follow a user", responses = {
+            @ApiResponse(responseCode = "200", description = "User followed successfully",
+                    content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public UserResponseDTO followUser(@PathVariable(name = "id") UUID id,
                                       @RequestParam(name = "userId") UUID userId){
         return userService.followUser(id, userId);
