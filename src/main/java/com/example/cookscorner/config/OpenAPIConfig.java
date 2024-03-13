@@ -22,11 +22,11 @@ import io.swagger.v3.oas.annotations.servers.Server;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:9999"
+                        url = "http://localhost:8080"
                 ),
                 @Server(
                         description = "Droplet ENV",
-                        url = "http://164.92.253.177:9999"
+                        url = "http://165.232.124.153:8080"
                 )
         }
 )

@@ -39,3 +39,6 @@ management:
 
 app:
   baseUrl: http://cookscorner
+
+
+
