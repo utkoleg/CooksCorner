@@ -1,8 +1,6 @@
 package com.example.cookscorner.dto.response;
 
 import com.example.cookscorner.entities.Recipe;
-import com.example.cookscorner.entities.User;
-import jakarta.persistence.ManyToMany;
 import lombok.*;
 
 import java.util.List;
@@ -28,7 +26,7 @@ public class UserResponseDTO {
 
     List<Recipe> savedRecipes;
 
-    List<User> followers;
+    List<UUID> followers;
 
-    List<User> following;
+    List<UUID> following;
 }

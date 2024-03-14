@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Builder
@@ -35,6 +34,6 @@ public class Recipe {
 
     private String imageUrl;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients;
 }

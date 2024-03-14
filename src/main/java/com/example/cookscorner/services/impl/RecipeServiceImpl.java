@@ -1,9 +1,11 @@
 package com.example.cookscorner.services.impl;
 
+import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.enums.Difficulty;
+import com.example.cookscorner.repositories.IngredientRepository;
 import com.example.cookscorner.repositories.RecipeRepository;
 import com.example.cookscorner.services.FileUploadService;
 import com.example.cookscorner.services.RecipeService;
@@ -16,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,37 +26,93 @@ import java.util.concurrent.CompletableFuture;
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final FileUploadService fileUploadService;
+    private final IngredientRepository ingredientRepository;
     @Override
     public List<Recipe> getRecipes() {
         return recipeRepository.findAll();
     }
 
-    @Override
+//    @Override
+//    public UUID addRecipe(String name, String description, String difficulty, String category,
+//                          String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image) {
+//
+//        validateRecipeInput(name, description, difficulty, category, preparationTime, ingredientRequestDTOs);
+//
+//        List<Ingredient> ingredients = ingredientRequestDTOs.stream()
+//                .map(this::convertToIngredient)
+//                .collect(Collectors.toList());
+//
+//        Recipe recipe = null;
+//        try {
+//            recipe = Recipe.builder()
+//                    .name(name)
+//                    .description(description)
+//                    .difficulty(Difficulty.valueOf(difficulty.toUpperCase()))
+//                    .category(category)
+//                    .preparationTime(Integer.parseInt(preparationTime))
+//                    .ingredients(ingredients)
+//                    .imageUrl(fileUploadService.uploadFile(image))
+//                    .build();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return recipeRepository.save(recipe).getId();
+//    }
+
+        @Override
     public UUID addRecipe(String name, String description, String difficulty, String category,
-                          String preparationTime, List<Ingredient> ingredients, MultipartFile image) {
+                          String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image) {
 
-        validateRecipeInput(name, description, difficulty, category, preparationTime, ingredients);
+        validateRecipeInput(name, description, difficulty, category, preparationTime, ingredientRequestDTOs);
 
-        Recipe recipe = Recipe.builder()
-                .name(name)
-                .description(description)
-                .difficulty(Difficulty.valueOf(difficulty.toUpperCase()))
-                .category(category)
-                .preparationTime(Integer.parseInt(preparationTime))
-                .ingredients(ingredients)
-                .build();
+        List<Ingredient> ingredients = ingredientRequestDTOs.stream()
+                .map(this::convertToIngredient)
+                .collect(Collectors.toList());
 
-        CompletableFuture<String> imageUrlFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return fileUploadService.uploadFile(image);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to upload image", e);
-            }
-        });
+        ingredientRepository.saveAll(ingredients);
+        Recipe recipe;
+        try {
+            recipe = Recipe.builder()
+                    .name(name)
+                    .description(description)
+                    .difficulty(Difficulty.valueOf(difficulty.toUpperCase()))
+                    .category(category)
+                    .preparationTime(Integer.parseInt(preparationTime))
+                    .ingredients(ingredients)
+                    .imageUrl(fileUploadService.uploadFile(image))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        recipe.setImageUrl(imageUrlFuture.join());
         return recipeRepository.save(recipe).getId();
     }
+
+//    @Override
+//    public UUID addRecipe(RecipeRequestDTO recipeRequestDTO) {
+//
+//        List<Ingredient> ingredients = recipeRequestDTO.getIngredients().stream()
+//                .map(this::convertToIngredient)
+//                .collect(Collectors.toList());
+//
+//        Recipe recipe = null;
+//        try {
+//            recipe = Recipe.builder()
+//                    .name(recipeRequestDTO.getName())
+//                    .description(recipeRequestDTO.getDescription())
+//                    .difficulty(Difficulty.valueOf(recipeRequestDTO.getDifficulty().toUpperCase()))
+//                    .category(recipeRequestDTO.getCategory())
+//                    .preparationTime(Integer.parseInt(recipeRequestDTO.getPreparationTime()))
+//                    .ingredients(ingredients)
+//                    .imageUrl(fileUploadService.uploadFile(recipeRequestDTO.getImage()))
+//                    .build();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return recipeRepository.save(recipe).getId();
+//    }
 
     @Override
     public List<Recipe> getRecipesByCategory(String category) {
@@ -77,7 +135,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     private void validateRecipeInput(String name, String description, String difficulty, String category,
-                                     String preparationTime, List<Ingredient> ingredients) {
+                                     String preparationTime, List<IngredientRequestDTO> ingredients) {
         // Check if any string parameter is null or empty
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Recipe name cannot be null or empty.");
@@ -113,7 +171,7 @@ public class RecipeServiceImpl implements RecipeService {
         if (ingredients == null || ingredients.isEmpty()) {
             throw new IllegalArgumentException("Ingredients list cannot be null or empty.");
         }
-        for (Ingredient ingredient : ingredients) {
+        for (IngredientRequestDTO ingredient : ingredients) {
             if (ingredient.getName() == null || ingredient.getName().isEmpty()) {
                 throw new IllegalArgumentException("Ingredient name cannot be null or empty.");
             }
@@ -123,4 +181,11 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
 
+    public Ingredient convertToIngredient(IngredientRequestDTO ingredientRequestDTO) {
+        return Ingredient.builder()
+                .name(ingredientRequestDTO.getName())
+                .quantity(ingredientRequestDTO.getQuantity())
+                .measurement(ingredientRequestDTO.getMeasurement())
+                .build();
+    }
 }

@@ -3,6 +3,7 @@ package com.example.cookscorner.services;
 import com.example.cookscorner.dto.response.UserResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -19,4 +20,8 @@ public interface UserService {
     UserResponseDTO getUser(UUID id);
 
     UserResponseDTO followUser(UUID id, UUID userId);
+
+    List<UserResponseDTO> getUsers();
+
+    UserResponseDTO unfollowUser(UUID userToUnFollowId, UUID userId);
 }

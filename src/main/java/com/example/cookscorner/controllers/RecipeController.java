@@ -1,15 +1,16 @@
 package com.example.cookscorner.controllers;
 
+import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
-import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.services.RecipeService;
+import com.example.cookscorner.wrappers.IngredientListWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,22 +53,48 @@ public class RecipeController {
         return recipeService.getRecipe(id);
     }
 
-    @PostMapping()
-    @Operation(summary = "Add a new recipe", responses = {
-            @ApiResponse(responseCode = "200", description = "Recipe added successfully",
-                    content = @Content(schema = @Schema(implementation = UUID.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request data")
-    })
-    public UUID addRecipe(
-            @RequestParam(name = "name") String name,
-            @RequestParam(name = "description") String description,
-            @RequestParam(name = "difficulty") String difficulty,
-            @RequestParam(name = "category") String category,
-            @RequestParam(name = "preparationTime") String preparationTime,
-            @RequestParam(name = "listOfIngredients") List<Ingredient> ingredients,
-            @RequestParam(name = "image")MultipartFile image
-            ){
-        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredients, image);
-    }
 
+    @PostMapping()
+    @Operation(summary = "Add a new recipe",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recipe added successfully",
+                            content = @Content(schema = @Schema(implementation = UUID.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request data")
+            })
+    public UUID addRecipe(
+            @RequestParam("name")
+            @Parameter(description = "Name of the recipe", required = true) String name,
+            @RequestParam("description")
+            @Parameter(description = "Description of the recipe", required = true) String description,
+            @RequestParam("difficulty")
+            @Parameter(description = "Difficulty level of the recipe", required = true) String difficulty,
+            @RequestParam("category")
+            @Parameter(description = "Category of the recipe", required = true) String category,
+            @RequestParam("preparationTime")
+            @Parameter(description = "Preparation time of the recipe", required = true) String preparationTime,
+            @ModelAttribute
+            @Parameter(description = "List of ingredients", required = true) IngredientListWrapper ingredientWrapper,
+            @RequestParam("image")
+            @Parameter(description = "Image of the recipe", required = true) MultipartFile image
+    ) {
+        List<IngredientRequestDTO> ingredientRequestDTOs = ingredientWrapper.getIngredients();
+        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image);
+    }
 }
+//    public UUID addRecipe(
+//            @RequestParam(name = "name") String name,
+//            @RequestParam(name = "description") String description,
+//            @RequestParam(name = "difficulty") String difficulty,
+//            @RequestParam(name = "category") String category,
+//            @RequestParam(name = "preparationTime") String preparationTime,
+//            @RequestParam(name = "listOfIngredients") @RequestBody List<IngredientRequestDTO> ingredients,
+//            @RequestParam(name = "image")MultipartFile image
+//            ){
+//        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredients, image);
+//    }
+
+
+//    public UUID createRecipe(@ModelAttribute @Parameter(description = "Recipe request data", required = true)
+//                                 RecipeRequestDTO recipeRequest, Model model) {
+//        return recipeService.addRecipe(recipeRequest);
+//    }
