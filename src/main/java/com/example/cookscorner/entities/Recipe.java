@@ -26,14 +26,12 @@ public class Recipe {
 
     private Difficulty difficulty;
 
-    //private String difficulty;
-
     private String category;
 
     private int preparationTime;
 
     private String imageUrl;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients;
 }

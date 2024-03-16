@@ -1,6 +1,7 @@
 package com.example.cookscorner.services;
 
 import com.example.cookscorner.dto.response.UserResponseDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,9 +20,11 @@ public interface UserService {
 
     UserResponseDTO getUser(UUID id);
 
-    UserResponseDTO followUser(UUID id, UUID userId);
+    UserResponseDTO followUser(UUID id, HttpSession userId);
 
     List<UserResponseDTO> getUsers();
 
-    UserResponseDTO unfollowUser(UUID userToUnFollowId, UUID userId);
+    UserResponseDTO unfollowUser(UUID userToUnFollowId, HttpSession userId);
+
+    UserResponseDTO getProfile(HttpSession session);
 }

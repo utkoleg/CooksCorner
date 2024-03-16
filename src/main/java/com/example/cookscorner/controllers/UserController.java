@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,16 @@ public class UserController {
         return userService.getUser(id);
     }
 
+    @GetMapping("/profile")
+    @Operation(summary = "Get user profile", responses = {
+            @ApiResponse(responseCode = "200", description = "User profile details",
+                    content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found or not authenticated")
+    })
+    public UserResponseDTO getUserProfile(HttpSession session) {
+        return userService.getProfile(session);
+    }
+
     @PostMapping("/{userToFollowId}")
     @Operation(summary = "Follow a user", responses = {
             @ApiResponse(responseCode = "200", description = "User followed successfully",
@@ -47,8 +58,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public UserResponseDTO followUser(@PathVariable(name = "userToFollowId") UUID userToFollowId,
-                                      @RequestParam(name = "userId") UUID userId){
-        return userService.followUser(userToFollowId, userId);
+                                      HttpSession session){
+        return userService.followUser(userToFollowId, session);
     }
 
     @PostMapping("/{userToUnFollowId}/unfollow")
@@ -58,7 +69,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public UserResponseDTO unfollowUser(@PathVariable(name = "userToUnFollowId") UUID userToUnFollowId,
-                                        @RequestParam(name = "userId") UUID userId){
-        return userService.unfollowUser(userToUnFollowId, userId);
+                                        HttpSession session){
+        return userService.unfollowUser(userToUnFollowId, session);
     }
 }

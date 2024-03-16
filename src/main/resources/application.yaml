@@ -1,5 +1,9 @@
 server:
   port: 8080
+  servlet:
+    session:
+      timeout: 60m  # Session timeout
+
 spring:
   servlet:
     multipart:
@@ -39,6 +43,4 @@ management:
 
 app:
   baseUrl: http://cookscorner
-
-
 

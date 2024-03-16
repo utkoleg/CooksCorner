@@ -1,5 +1,6 @@
 package com.example.cookscorner.controllers;
 
+import com.example.cookscorner.config.JwtService;
 import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
 import com.example.cookscorner.entities.Recipe;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,8 +41,8 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "List of recipes in the specified category",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class)))),
     })
-    public List<Recipe> getRecipesByCategory(@RequestParam(name = "id") String category){
-        return recipeService.getRecipesByCategory(category);
+    public List<Recipe> getRecipesByCategory(@RequestParam(name = "id") String categoryId){
+        return recipeService.getRecipesByCategory(categoryId);
     }
 
     @GetMapping("/{id}")
@@ -80,21 +82,33 @@ public class RecipeController {
         List<IngredientRequestDTO> ingredientRequestDTOs = ingredientWrapper.getIngredients();
         return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image);
     }
+
+    @PostMapping("/save")
+    @Operation(summary = "Save a recipe to the user's saved recipes",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recipe saved successfully",
+                            content = @Content(schema = @Schema(implementation = UUID.class))),
+                    @ApiResponse(responseCode = "404", description = "Recipe or user not found")
+            })
+    public UUID saveRecipe(
+            @Parameter(description = "The ID of the recipe to save") @RequestParam UUID recipeId,
+            HttpSession session
+    ) {
+        return recipeService.saveRecipeToUser(recipeId, session);
+    }
+
+    @PostMapping("/like")
+    @Operation(summary = "Like a recipe",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recipe liked successfully",
+                            content = @Content(schema = @Schema(implementation = UUID.class))),
+                    @ApiResponse(responseCode = "404", description = "Recipe or user not found")
+            })
+    public UUID likeRecipe(
+            @Parameter(description = "The ID of the recipe to like") @RequestParam UUID recipeId,
+            HttpSession session
+    ) {
+        return recipeService.likeRecipe(recipeId, session);
+    }
+
 }
-//    public UUID addRecipe(
-//            @RequestParam(name = "name") String name,
-//            @RequestParam(name = "description") String description,
-//            @RequestParam(name = "difficulty") String difficulty,
-//            @RequestParam(name = "category") String category,
-//            @RequestParam(name = "preparationTime") String preparationTime,
-//            @RequestParam(name = "listOfIngredients") @RequestBody List<IngredientRequestDTO> ingredients,
-//            @RequestParam(name = "image")MultipartFile image
-//            ){
-//        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredients, image);
-//    }
-
-
-//    public UUID createRecipe(@ModelAttribute @Parameter(description = "Recipe request data", required = true)
-//                                 RecipeRequestDTO recipeRequest, Model model) {
-//        return recipeService.addRecipe(recipeRequest);
-//    }

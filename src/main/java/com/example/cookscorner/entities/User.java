@@ -36,16 +36,19 @@ public class User implements UserDetails {
 
     private String bio;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<Recipe> recipes;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<Recipe> savedRecipes;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    List<Recipe> likedRecipes;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     List<User> followers;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<User> following;
 
     @Enumerated(EnumType.STRING)

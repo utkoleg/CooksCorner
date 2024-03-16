@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +49,10 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request,
+            HttpSession session
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(request, session));
     }
 
     @GetMapping("/activate")
@@ -99,5 +101,14 @@ public class AuthenticationController {
     public UUID updateImage(@RequestParam(name = "image") MultipartFile image,
                               @RequestParam(name = "id") UUID id){
         return userService.updateImage(image, id);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Log out a user", responses = {
+            @ApiResponse(responseCode = "200", description = "User logged out successfully")
+    })
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("User logged out.");
     }
 }

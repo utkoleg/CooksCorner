@@ -10,6 +10,7 @@ import com.example.cookscorner.exceptions.UserAlreadyExistsException;
 import com.example.cookscorner.repositories.UserRepository;
 import com.example.cookscorner.services.AuthenticationService;
 import com.example.cookscorner.services.EmailService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -74,15 +75,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         sendVerificationEmail(user);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()
-                    )
-            );
+    public AuthenticationResponse authenticate(AuthenticationRequest request, HttpSession session) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        session.setAttribute("authorizedUser", user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
