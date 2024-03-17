@@ -6,27 +6,23 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class UserResponseDTO {
-    private UUID id;
+public record UserResponseDTO(UUID id,
 
-    private String username;
+                              String username,
 
-    private String email;
+                              String email,
 
-    private String imageUrl;
+                              String imageUrl,
 
-    private String bio;
+                              String bio,
 
-    List<Recipe> recipes;
+                              List<RecipeResponseDTO> recipes,
 
-    List<Recipe> savedRecipes;
+                              List<RecipeResponseDTO> savedRecipes,
+                              List<RecipeResponseDTO> likedRecipes,
 
-    List<UUID> followers;
+                              List<UUID> followers,
 
-    List<UUID> following;
+                              List<UUID> following,
+                              List<String> roles) {
 }

@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RecipeService {
-    List<Recipe> getRecipes();
+    List<RecipeResponseDTO> getRecipes();
 
 //    UUID addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredients, MultipartFile image);
 //    UUID addRecipe(RecipeRequestDTO recipeRequestDTO);
 
 
 
-    List<Recipe> getRecipesByCategory(String category);
+    List<RecipeResponseDTO> getRecipesByCategory(String category);
 
     RecipeResponseDTO getRecipe(UUID id);
 

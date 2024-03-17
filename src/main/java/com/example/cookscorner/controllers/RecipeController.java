@@ -1,6 +1,5 @@
 package com.example.cookscorner.controllers;
 
-import com.example.cookscorner.config.JwtService;
 import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
 import com.example.cookscorner.entities.Recipe;
@@ -32,7 +31,7 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "List of recipes",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class)))),
     })
-    public List<Recipe> getRecipes(){
+    public List<RecipeResponseDTO> getRecipes(){
         return recipeService.getRecipes();
     }
 
@@ -41,7 +40,7 @@ public class RecipeController {
             @ApiResponse(responseCode = "200", description = "List of recipes in the specified category",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = Recipe.class)))),
     })
-    public List<Recipe> getRecipesByCategory(@RequestParam(name = "id") String categoryId){
+    public List<RecipeResponseDTO> getRecipesByCategory(@RequestParam(name = "id") String categoryId){
         return recipeService.getRecipesByCategory(categoryId);
     }
 

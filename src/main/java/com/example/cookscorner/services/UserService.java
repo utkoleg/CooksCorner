@@ -14,9 +14,9 @@ public interface UserService {
 
     String updatePassword(String token, String newPassword);
 
-    String updateBio(String bio, UUID id);
+    String updateBio(String bio, HttpSession id);
 
-    UUID updateImage(MultipartFile image, UUID id);
+    UUID updateImage(MultipartFile image, HttpSession id);
 
     UserResponseDTO getUser(UUID id);
 

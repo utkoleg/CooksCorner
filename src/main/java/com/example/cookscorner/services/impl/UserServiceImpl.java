@@ -3,6 +3,7 @@ package com.example.cookscorner.services.impl;
 import com.example.cookscorner.dto.response.UserResponseDTO;
 import com.example.cookscorner.entities.User;
 import com.example.cookscorner.exceptions.ImageUploadException;
+import com.example.cookscorner.mappers.UserMapper;
 import com.example.cookscorner.repositories.UserRepository;
 import com.example.cookscorner.services.EmailService;
 import com.example.cookscorner.services.FileUploadService;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileUploadService fileUploadService;
+    private final UserMapper userMapper;
 
     @Value("${app.baseUrl}")
     private String baseUrl;
@@ -69,7 +71,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateBio(String bio, UUID id) {
+    public String updateBio(String bio, HttpSession session) {
+        UUID id = (UUID) session.getAttribute("authorizedUserId");
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         if (user != null) {
             user.setBio(bio);
@@ -80,7 +83,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UUID updateImage(MultipartFile image, UUID id) {
+    public UUID updateImage(MultipartFile image, HttpSession session) {
+        UUID id = (UUID) session.getAttribute("authorizedUserId");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
 
@@ -95,8 +99,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO getUser(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return getUserResponseDTO(user);
+       return userRepository.findById(id)
+               .map(userMapper)
+               .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
@@ -110,7 +115,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userToFollow);
         userRepository.save(user);
 
-        return getUserResponseDTO(user);
+        return userRepository.findById(user.getId()).map(userMapper).orElseThrow();
     }
 
     @Override
@@ -125,41 +130,32 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         userRepository.save(userToFollow);
 
-        return getUserResponseDTO(user);
+        return userRepository.findById(user.getId()).map(userMapper).orElseThrow();
     }
 
     @Override
     public UserResponseDTO getProfile(HttpSession session) {
-        User user = (User) session.getAttribute("authorizedUser");
-        return getUserResponseDTO(user);
+        UUID id = (UUID) session.getAttribute("authorizedUserId");
+        return userRepository.findById(id)
+                .map(userMapper)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
-
     @Override
     public List<UserResponseDTO> getUsers() {
-        return userRepository.findAll().stream().map(user -> new UserResponseDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getImageUrl(),
-                user.getBio(),
-                user.getRecipes(),
-                user.getSavedRecipes(),
-                user.getFollowers().stream().map(User::getId).collect(Collectors.toList()),
-                user.getFollowing().stream().map(User::getId).collect(Collectors.toList())
-        )).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(userMapper).collect(Collectors.toList());
     }
 
-    public UserResponseDTO getUserResponseDTO(User user){
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .bio(user.getBio())
-                .email(user.getEmail())
-                .followers(user.getFollowers().stream().map(User::getId).collect(Collectors.toList())) // Map User objects to UUIDs
-                .following(user.getFollowing().stream().map(User::getId).collect(Collectors.toList()))
-                .imageUrl(user.getImageUrl())
-                .recipes(user.getRecipes())
-                .savedRecipes(user.getSavedRecipes())
-                .build();
-    }
+//    public UserResponseDTO getUserResponseDTO(User user){
+//        return UserResponseDTO.builder()
+//                .id(user.getId())
+//                .username(user.getUsername())
+//                .bio(user.getBio())
+//                .email(user.getEmail())
+//                .followers(user.getFollowers().stream().map(User::getId).collect(Collectors.toList())) // Map User objects to UUIDs
+//                .following(user.getFollowing().stream().map(User::getId).collect(Collectors.toList()))
+//                .imageUrl(user.getImageUrl())
+//                .recipes(user.getRecipes())
+//                .savedRecipes(user.getSavedRecipes())
+//                .build();
+//    }
 }

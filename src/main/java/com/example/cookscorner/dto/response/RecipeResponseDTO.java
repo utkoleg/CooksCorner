@@ -7,27 +7,18 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class RecipeResponseDTO {
-    private UUID id;
+public record RecipeResponseDTO(UUID id, String name,
 
-    private String name;
+                                String description,
 
-    private String description;
+                                Difficulty difficulty,
 
-    private Difficulty difficulty;
+                                //private String difficulty;
 
-    //private String difficulty;
+                                String category,
 
-    private String category;
+                                int preparationTime,
 
-    private int preparationTime;
+                                String imageUrl,
 
-    private String imageUrl;
-
-    private List<Ingredient> ingredients;
-}
+                                List<IngredientResponseDTO> ingredients){}

@@ -34,25 +34,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (user.isEnabled()) {
                 throw new UserAlreadyExistsException("User already exists");
             } else {
-                // User exists but is not enabled, resend verification email
                 resendVerificationEmail(user);
                 return null;
             }
         }
 
-        // User does not exist, create a new user
         var newUser = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
-                .enabled(false) // Set enabled to false initially
+                .enabled(false)
                 .build();
         newUser.generateActivationToken();
         userRepository.save(newUser);
         sendVerificationEmail(newUser);
 
-        // You might want to return a different response here since the user is not fully registered yet
         var jwtToken = jwtService.generateToken(newUser);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -69,7 +66,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void resendVerificationEmail(User user) {
-        // You can regenerate the token or use the existing one
         user.generateActivationToken();
         userRepository.save(user);
         sendVerificationEmail(user);
@@ -85,6 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         session.setAttribute("authorizedUser", user);
+        session.setAttribute("authorizedUserId", user.getId());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

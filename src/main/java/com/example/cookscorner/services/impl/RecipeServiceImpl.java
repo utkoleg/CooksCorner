@@ -6,6 +6,7 @@ import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.entities.User;
 import com.example.cookscorner.enums.Difficulty;
+import com.example.cookscorner.mappers.RecipeMapper;
 import com.example.cookscorner.repositories.IngredientRepository;
 import com.example.cookscorner.repositories.RecipeRepository;
 import com.example.cookscorner.repositories.UserRepository;
@@ -32,10 +33,11 @@ public class RecipeServiceImpl implements RecipeService {
     private final FileUploadService fileUploadService;
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
+    private final RecipeMapper recipeMapper;
 
     @Override
-    public List<Recipe> getRecipes() {
-        return recipeRepository.findAll();
+    public List<RecipeResponseDTO> getRecipes() {
+        return recipeRepository.findAll().stream().map(recipeMapper).toList();
     }
 
     @Override
@@ -105,23 +107,25 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<Recipe> getRecipesByCategory(String category) {
-        return recipeRepository.findAllByCategory(category);
+    public List<RecipeResponseDTO> getRecipesByCategory(String category) {
+        return recipeRepository.findAllByCategory(category).stream().map(recipeMapper).toList();
     }
 
     @Override
     public RecipeResponseDTO getRecipe(UUID id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+        return recipeRepository.findById(id)
+                .map(recipeMapper)
+                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
 
-        return RecipeResponseDTO.builder()
-                .id(recipe.getId())
-                .name(recipe.getName())
-                .category(recipe.getCategory())
-                .description(recipe.getDescription())
-                .difficulty(recipe.getDifficulty())
-                .imageUrl(recipe.getImageUrl())
-                .ingredients(recipe.getIngredients())
-                .build();
+//        return RecipeResponseDTO.builder()
+//                .id(recipe.getId())
+//                .name(recipe.getName())
+//                .category(recipe.getCategory())
+//                .description(recipe.getDescription())
+//                .difficulty(recipe.getDifficulty())
+//                .imageUrl(recipe.getImageUrl())
+//                .ingredients(recipe.getIngredients())
+//                .build();
     }
 
     public Ingredient convertToIngredient(IngredientRequestDTO ingredientRequestDTO) {

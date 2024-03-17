@@ -100,5 +100,7 @@ public class User implements UserDetails {
         this.activationToken = UUID.randomUUID().toString();
     }
 
-    public void generatePasswordResetToken(){this.activationToken = UUID.randomUUID().toString();}
+    public void generatePasswordResetToken() {
+        this.activationToken = UUID.randomUUID().toString();
+    }
 }

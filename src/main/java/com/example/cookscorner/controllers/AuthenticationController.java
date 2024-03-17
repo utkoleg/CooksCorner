@@ -80,8 +80,8 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public String updateBio(@RequestParam(name = "bio") String bio,
-                            @RequestParam(name = "id") UUID id){
-        return userService.updateBio(bio, id);
+                            HttpSession session){
+        return userService.updateBio(bio, session);
     }
 
     @PostMapping("/update-password")
@@ -99,8 +99,8 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public UUID updateImage(@RequestParam(name = "image") MultipartFile image,
-                              @RequestParam(name = "id") UUID id){
-        return userService.updateImage(image, id);
+                              HttpSession session){
+        return userService.updateImage(image, session);
     }
 
     @PostMapping("/logout")
