@@ -99,8 +99,4 @@ public class User implements UserDetails {
     public void generateActivationToken() {
         this.activationToken = UUID.randomUUID().toString();
     }
-
-    public void generatePasswordResetToken() {
-        this.activationToken = UUID.randomUUID().toString();
-    }
 }

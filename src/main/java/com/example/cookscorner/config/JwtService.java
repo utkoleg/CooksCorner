@@ -68,11 +68,6 @@ public class JwtService {
                 .getBody();
     }
 
-    public UUID extractUserId(String token) {
-        Claims claims = extractAllClaims(token);
-        return UUID.fromString(claims.get("userId", String.class));
-    }
-
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);

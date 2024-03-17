@@ -1,8 +1,6 @@
 package com.example.cookscorner.dto.response;
 
-import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.enums.Difficulty;
-import lombok.*;
 
 import java.util.List;
 import java.util.UUID;

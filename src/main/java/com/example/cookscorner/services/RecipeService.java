@@ -2,7 +2,6 @@ package com.example.cookscorner.services;
 
 import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
-import com.example.cookscorner.entities.Recipe;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.multipart.MultipartFile;
 

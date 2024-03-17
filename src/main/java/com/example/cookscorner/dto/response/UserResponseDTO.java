@@ -1,7 +1,5 @@
 package com.example.cookscorner.dto.response;
 
-import com.example.cookscorner.entities.Recipe;
-import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
