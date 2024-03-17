@@ -113,9 +113,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeResponseDTO getRecipe(UUID id) {
-        return recipeRepository.findById(id)
-                .map(recipeMapper)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+        return recipeMapper.apply(recipeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found")));
 
 //        return RecipeResponseDTO.builder()
 //                .id(recipe.getId())

@@ -99,9 +99,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO getUser(UUID id) {
-       return userRepository.findById(id)
-               .map(userMapper)
-               .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userMapper
+                .apply(userRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("User not found")));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userToFollow);
         userRepository.save(user);
 
-        return userRepository.findById(user.getId()).map(userMapper).orElseThrow();
+        return userMapper.apply(userRepository.findById(user.getId()).orElseThrow());
     }
 
     @Override
@@ -130,32 +130,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         userRepository.save(userToFollow);
 
-        return userRepository.findById(user.getId()).map(userMapper).orElseThrow();
+        return userMapper.apply(userRepository.findById(user.getId()).orElseThrow());
     }
 
     @Override
     public UserResponseDTO getProfile(HttpSession session) {
         UUID id = (UUID) session.getAttribute("authorizedUserId");
-        return userRepository.findById(id)
-                .map(userMapper)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userMapper.apply(userRepository.findById(id).orElseThrow());
     }
     @Override
     public List<UserResponseDTO> getUsers() {
         return userRepository.findAll().stream().map(userMapper).collect(Collectors.toList());
     }
-
-//    public UserResponseDTO getUserResponseDTO(User user){
-//        return UserResponseDTO.builder()
-//                .id(user.getId())
-//                .username(user.getUsername())
-//                .bio(user.getBio())
-//                .email(user.getEmail())
-//                .followers(user.getFollowers().stream().map(User::getId).collect(Collectors.toList())) // Map User objects to UUIDs
-//                .following(user.getFollowing().stream().map(User::getId).collect(Collectors.toList()))
-//                .imageUrl(user.getImageUrl())
-//                .recipes(user.getRecipes())
-//                .savedRecipes(user.getSavedRecipes())
-//                .build();
-//    }
 }
