@@ -23,7 +23,7 @@ public class Ingredient {
 
     private String name;
 
-    private int quantity;
+    private String quantity;
 
     private String measurement;
 }

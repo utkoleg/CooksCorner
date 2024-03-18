@@ -78,10 +78,11 @@ public class RecipeController {
             @ModelAttribute
             @Parameter(description = "List of ingredients", required = true) IngredientListWrapper ingredientWrapper,
             @RequestParam("image")
-            @Parameter(description = "Image of the recipe", required = true) MultipartFile image
+            @Parameter(description = "Image of the recipe", required = true) MultipartFile image,
+            HttpSession session
     ) {
         List<IngredientRequestDTO> ingredientRequestDTOs = ingredientWrapper.getIngredients();
-        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image);
+        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image, session);
     }
 
     @PostMapping("/save")

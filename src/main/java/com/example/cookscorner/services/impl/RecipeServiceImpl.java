@@ -42,7 +42,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public UUID addRecipe(String name, String description, String difficulty, String category,
-                          String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image) {
+                          String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs,
+                          MultipartFile image, HttpSession session) {
 
         List<Ingredient> ingredients = ingredientRequestDTOs.stream()
                 .map(this::convertToIngredient)
@@ -50,15 +51,19 @@ public class RecipeServiceImpl implements RecipeService {
 
         ingredientRepository.saveAll(ingredients);
         Recipe recipe;
+        UUID userId = (UUID) session.getAttribute("authorizedUserId");
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        String author = user.getName() + " " + user.getSurname();
         try {
             recipe = Recipe.builder()
                     .name(name)
                     .description(description)
                     .difficulty(Difficulty.valueOf(difficulty.toUpperCase()))
                     .category(category)
-                    .preparationTime(Integer.parseInt(preparationTime))
+                    .preparationTime(preparationTime)
                     .ingredients(ingredients)
                     .imageUrl(fileUploadService.uploadFile(image))
+                    .author(author)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

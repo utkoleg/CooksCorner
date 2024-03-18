@@ -15,7 +15,7 @@ public interface RecipeService {
 
     RecipeResponseDTO getRecipe(UUID id);
 
-    UUID addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image);
+    UUID addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image, HttpSession session);
 
     UUID saveRecipeToUser(UUID recipeId, HttpSession userId);
 

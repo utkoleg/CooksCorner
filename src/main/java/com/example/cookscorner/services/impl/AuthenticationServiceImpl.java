@@ -45,6 +45,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .enabled(false)
+                .name(request.getName())
+                .surname(request.getSurname())
                 .build();
         newUser.generateActivationToken();
         userRepository.save(newUser);

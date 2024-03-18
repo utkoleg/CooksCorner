@@ -21,7 +21,8 @@ public class RecipeMapper implements Function<Recipe, RecipeResponseDTO> {
                 recipe.getCategory(),
                 recipe.getPreparationTime(),
                 recipe.getImageUrl(),
-                recipe.getIngredients().stream().map(this::getIngredientResponseDTO).collect(Collectors.toList())
+                recipe.getIngredients().stream().map(this::getIngredientResponseDTO).collect(Collectors.toList()),
+                recipe.getAuthor()
         );
     }
 

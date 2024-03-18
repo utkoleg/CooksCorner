@@ -60,6 +60,10 @@ public class User implements UserDetails {
 
     private String passwordResetToken;
 
+    private String name;
+
+    private String surname;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

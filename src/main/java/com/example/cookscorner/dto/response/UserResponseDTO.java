@@ -17,10 +17,16 @@ public record UserResponseDTO(UUID id,
                               List<RecipeResponseDTO> recipes,
 
                               List<RecipeResponseDTO> savedRecipes,
+
                               List<RecipeResponseDTO> likedRecipes,
 
                               List<UUID> followers,
 
                               List<UUID> following,
-                              List<String> roles) {
+
+                              List<String> roles,
+
+                              String name,
+
+                              String surname) {
 }

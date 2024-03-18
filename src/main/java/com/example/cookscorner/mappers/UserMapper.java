@@ -26,6 +26,8 @@ public class UserMapper implements Function<User, UserResponseDTO> {
                 user.getLikedRecipes().stream().map(recipeMapper).toList(),
                 user.getFollowers().stream().map(User::getId).collect(Collectors.toList()),
                 user.getFollowing().stream().map(User::getId).collect(Collectors.toList()),
-                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()),
+                user.getName(),
+                user.getSurname());
     }
 }

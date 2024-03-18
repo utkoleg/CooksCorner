@@ -13,8 +13,8 @@ public class IngredientRequestDTO {
     @NotBlank(message = "Ingredient name is required")
     private String name;
 
-    @Min(value = 1, message = "Quantity must be at least 1")
-    private int quantity;
+    @Min(value = -1, message = "Quantity must be a positive number")
+    private String quantity;
 
     @NotBlank(message = "Measurement is required")
     private String measurement;

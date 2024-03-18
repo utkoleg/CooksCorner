@@ -27,4 +27,6 @@ public interface UserService {
     UserResponseDTO unfollowUser(UUID userToUnFollowId, HttpSession userId);
 
     UserResponseDTO getProfile(HttpSession session);
+
+    UserResponseDTO changeNameSurname(String name, String surname, HttpSession session);
 }

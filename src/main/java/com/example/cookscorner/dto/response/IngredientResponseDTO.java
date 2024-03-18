@@ -6,7 +6,7 @@ public record IngredientResponseDTO(UUID id,
 
                                     String name,
 
-                                    int quantity,
+                                    String quantity,
 
                                     String measurement) {
 }

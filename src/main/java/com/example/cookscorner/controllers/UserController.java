@@ -74,4 +74,18 @@ public class UserController {
                                         HttpSession session){
         return userService.unfollowUser(userToUnFollowId, session);
     }
+
+    @PutMapping("/change-name-surname")
+    @Operation(summary = "Change user's name", responses = {
+            @ApiResponse(responseCode = "200", description = "Name changed successfully",
+            content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public UserResponseDTO changeNameSurname(
+            @RequestParam("name") String name,
+            @RequestParam("surname") String surname,
+            HttpSession session
+    ){
+        return userService.changeNameSurname(name, surname, session);
+    }
 }

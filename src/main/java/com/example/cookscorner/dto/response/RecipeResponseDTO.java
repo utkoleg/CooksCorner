@@ -11,12 +11,13 @@ public record RecipeResponseDTO(UUID id, String name,
 
                                 Difficulty difficulty,
 
-                                //private String difficulty;
-
                                 String category,
 
-                                int preparationTime,
+                                String preparationTime,
 
                                 String imageUrl,
 
-                                List<IngredientResponseDTO> ingredients){}
+                                List<IngredientResponseDTO> ingredients,
+
+                                String author) {
+}

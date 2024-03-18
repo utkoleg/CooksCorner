@@ -30,7 +30,6 @@ public class RecipeRequestDTO {
     private String category;
 
     @NotBlank(message = "Preparation time is required")
-    @Pattern(regexp = "\\d+", message = "Preparation time must be a positive integer")
     private String preparationTime;
 
     @Valid
@@ -39,4 +38,6 @@ public class RecipeRequestDTO {
 
     @NotNull(message = "Image is required")
     private MultipartFile image;
+
+    private String author;
 }

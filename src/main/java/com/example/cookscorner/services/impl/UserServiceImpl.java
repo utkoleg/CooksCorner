@@ -138,6 +138,18 @@ public class UserServiceImpl implements UserService {
         UUID id = (UUID) session.getAttribute("authorizedUserId");
         return userMapper.apply(userRepository.findById(id).orElseThrow());
     }
+
+    @Override
+    public UserResponseDTO changeNameSurname(String name, String surname, HttpSession session) {
+        UUID id = (UUID) session.getAttribute("authorizedUserId");
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.setName(name);
+        user.setSurname(surname);
+
+        return userMapper.apply(userRepository.save(user));
+    }
+
     @Override
     public List<UserResponseDTO> getUsers() {
         return userRepository.findAll().stream().map(userMapper).collect(Collectors.toList());

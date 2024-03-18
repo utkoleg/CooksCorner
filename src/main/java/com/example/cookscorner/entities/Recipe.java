@@ -28,10 +28,12 @@ public class Recipe {
 
     private String category;
 
-    private int preparationTime;
+    private String preparationTime;
 
     private String imageUrl;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients;
+
+    private String author;
 }
