@@ -3,7 +3,6 @@ package com.example.cookscorner.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(
@@ -14,10 +13,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 description = "OpenAPI documentation",
                 title = "OpenAPI specification - utkoleg",
-                version = "1.0",
-                license = @License(
-                        name = "utkoleg licence"
-                )
+                version = "1.0"
+//                license = @License(
+//                        name = "utkoleg licence"
+//                )
         ),
         servers = {
                 @Server(

@@ -1,5 +1,6 @@
-package com.example.cookscorner.config;
+package com.example.cookscorner.filters;
 
+import com.example.cookscorner.config.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

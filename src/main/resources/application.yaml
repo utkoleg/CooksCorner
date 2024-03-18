@@ -4,10 +4,7 @@ server:
     session:
       timeout: 60m  # Session timeout
 
-
 spring:
-  main:
-    allow-bean-definition-overriding: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -37,10 +34,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  elasticsearch:
-    username: elastic
-    password: elastic
-    uris: "localhost:9200"
 
 management:
   endpoint:

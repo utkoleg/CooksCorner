@@ -1,5 +1,6 @@
 package com.example.cookscorner.config;
 
+import com.example.cookscorner.filters.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
