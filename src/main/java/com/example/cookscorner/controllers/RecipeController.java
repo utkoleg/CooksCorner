@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/cookscorner/recipe")
 @CrossOrigin("*")
+@Tag(name = "Recipe controller", description = "Endpoints for recipe management")
 public class RecipeController {
     private final RecipeService recipeService;
 
@@ -110,4 +112,16 @@ public class RecipeController {
         return recipeService.likeRecipe(recipeId, session);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Search for recipes",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recipes found successfully",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecipeResponseDTO.class)))),
+                    @ApiResponse(responseCode = "404", description = "No recipes found")
+            })
+    public List<RecipeResponseDTO> search(
+            @Parameter(description = "The name or description to search for in recipes") @RequestParam String name
+    ) {
+        return recipeService.search(name);
+    }
 }

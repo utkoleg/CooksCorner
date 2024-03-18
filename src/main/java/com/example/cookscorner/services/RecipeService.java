@@ -11,11 +11,6 @@ import java.util.UUID;
 public interface RecipeService {
     List<RecipeResponseDTO> getRecipes();
 
-//    UUID addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredients, MultipartFile image);
-//    UUID addRecipe(RecipeRequestDTO recipeRequestDTO);
-
-
-
     List<RecipeResponseDTO> getRecipesByCategory(String category);
 
     RecipeResponseDTO getRecipe(UUID id);
@@ -25,4 +20,6 @@ public interface RecipeService {
     UUID saveRecipeToUser(UUID recipeId, HttpSession userId);
 
     UUID likeRecipe(UUID recipeId, HttpSession session);
+
+    List<RecipeResponseDTO> search(String name);
 }

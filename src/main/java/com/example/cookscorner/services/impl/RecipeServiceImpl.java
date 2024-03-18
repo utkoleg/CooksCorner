@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +33,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
     private final RecipeMapper recipeMapper;
+
 
     @Override
     public List<RecipeResponseDTO> getRecipes() {
@@ -94,7 +94,7 @@ public class RecipeServiceImpl implements RecipeService {
         User userTemp = (User) session.getAttribute("authorizedUser");
         User user = userRepository.findById(userTemp.getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if(user.getLikedRecipes().contains(recipe)){
+        if (user.getLikedRecipes().contains(recipe)) {
             user.getLikedRecipes().remove(recipe);
             log.info("recipe unliked");
         } else {
@@ -107,6 +107,14 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public List<RecipeResponseDTO> search(String name) {
+        return recipeRepository.findByNameContaining(name).stream()
+                .map(recipeMapper)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<RecipeResponseDTO> getRecipesByCategory(String category) {
         return recipeRepository.findAllByCategory(category).stream().map(recipeMapper).toList();
     }
@@ -114,16 +122,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeResponseDTO getRecipe(UUID id) {
         return recipeMapper.apply(recipeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Recipe not found")));
-
-//        return RecipeResponseDTO.builder()
-//                .id(recipe.getId())
-//                .name(recipe.getName())
-//                .category(recipe.getCategory())
-//                .description(recipe.getDescription())
-//                .difficulty(recipe.getDifficulty())
-//                .imageUrl(recipe.getImageUrl())
-//                .ingredients(recipe.getIngredients())
-//                .build();
     }
 
     public Ingredient convertToIngredient(IngredientRequestDTO ingredientRequestDTO) {

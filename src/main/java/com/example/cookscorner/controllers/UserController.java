@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/cookscorner")
 @CrossOrigin("*")
+@Tag(name = "User controller", description = "Endpoints for user management")
 public class UserController {
 
     private final UserService userService;

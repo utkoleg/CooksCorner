@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/cookscorner/auth")
 @RequiredArgsConstructor
 @CrossOrigin("*")
-@Tag(name = "Authentication", description = "Endpoints for user authentication and account management")
+@Tag(name = "Authentication controller", description = "Endpoints for user authentication and account management")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
