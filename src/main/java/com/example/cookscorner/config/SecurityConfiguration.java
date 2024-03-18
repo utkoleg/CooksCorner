@@ -24,6 +24,7 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/cookscorner/**","/cookscorner/recipe/**", "/logout").permitAll()
+                .requestMatchers("/cookscorner/users/**").authenticated()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
