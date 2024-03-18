@@ -65,7 +65,7 @@ We welcome contributions from the community. If you'd like to contribute, please
 
 ## Contact
 
-Your Name - email@example.com
+Your Name - Mun_2015@bk.ru
 
 Project Link: [https://github.com/utkoleg/cookscorner](https://github.com/utkoleg/cookscorner)
 ```
