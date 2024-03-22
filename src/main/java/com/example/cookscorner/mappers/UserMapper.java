@@ -1,6 +1,6 @@
 package com.example.cookscorner.mappers;
 
-import com.example.cookscorner.dto.response.UserResponseDTO;
+import com.example.cookscorner.dto.user.UserResponseDTO;
 import com.example.cookscorner.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

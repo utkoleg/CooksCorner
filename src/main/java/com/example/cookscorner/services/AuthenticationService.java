@@ -1,8 +1,8 @@
 package com.example.cookscorner.services;
 
-import com.example.cookscorner.dto.request.AuthenticationRequest;
-import com.example.cookscorner.dto.request.RegisterRequest;
-import com.example.cookscorner.dto.response.AuthenticationResponse;
+import com.example.cookscorner.dto.authentication.AuthenticationRequest;
+import com.example.cookscorner.dto.register.RegisterRequest;
+import com.example.cookscorner.dto.authentication.AuthenticationResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpSession;
 

@@ -1,6 +1,6 @@
 package com.example.cookscorner.services;
 
-import com.example.cookscorner.dto.response.UserResponseDTO;
+import com.example.cookscorner.dto.user.UserResponseDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.multipart.MultipartFile;
 

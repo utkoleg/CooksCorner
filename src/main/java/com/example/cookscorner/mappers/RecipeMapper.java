@@ -1,7 +1,7 @@
 package com.example.cookscorner.mappers;
 
-import com.example.cookscorner.dto.response.IngredientResponseDTO;
-import com.example.cookscorner.dto.response.RecipeResponseDTO;
+import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
+import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import org.springframework.stereotype.Service;

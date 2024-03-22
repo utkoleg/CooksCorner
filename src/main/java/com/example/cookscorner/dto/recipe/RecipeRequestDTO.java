@@ -1,5 +1,6 @@
-package com.example.cookscorner.dto.request;
+package com.example.cookscorner.dto.recipe;
 
+import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

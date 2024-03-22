@@ -1,4 +1,4 @@
-package com.example.cookscorner.dto.request;
+package com.example.cookscorner.dto.register;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

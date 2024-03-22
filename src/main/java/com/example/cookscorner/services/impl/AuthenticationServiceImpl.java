@@ -1,9 +1,9 @@
 package com.example.cookscorner.services.impl;
 
 import com.example.cookscorner.config.JwtService;
-import com.example.cookscorner.dto.request.AuthenticationRequest;
-import com.example.cookscorner.dto.request.RegisterRequest;
-import com.example.cookscorner.dto.response.AuthenticationResponse;
+import com.example.cookscorner.dto.authentication.AuthenticationRequest;
+import com.example.cookscorner.dto.register.RegisterRequest;
+import com.example.cookscorner.dto.authentication.AuthenticationResponse;
 import com.example.cookscorner.entities.User;
 import com.example.cookscorner.enums.Role;
 import com.example.cookscorner.exceptions.UserAlreadyExistsException;

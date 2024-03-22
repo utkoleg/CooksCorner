@@ -1,4 +1,4 @@
-package com.example.cookscorner.dto.request;
+package com.example.cookscorner.dto.ingredient;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

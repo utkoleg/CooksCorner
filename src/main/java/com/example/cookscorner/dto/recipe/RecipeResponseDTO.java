@@ -1,5 +1,7 @@
-package com.example.cookscorner.dto.response;
+package com.example.cookscorner.dto.recipe;
 
+
+import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
 
 import java.util.List;
 import java.util.UUID;

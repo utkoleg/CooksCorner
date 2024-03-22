@@ -1,6 +1,6 @@
 package com.example.cookscorner.wrappers;
 
-import com.example.cookscorner.dto.request.IngredientRequestDTO;
+import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import lombok.Data;
 
 import java.util.List;

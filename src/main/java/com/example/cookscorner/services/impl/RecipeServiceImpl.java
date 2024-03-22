@@ -1,7 +1,7 @@
 package com.example.cookscorner.services.impl;
 
-import com.example.cookscorner.dto.request.IngredientRequestDTO;
-import com.example.cookscorner.dto.response.RecipeResponseDTO;
+import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
+import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.entities.User;

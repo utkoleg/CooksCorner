@@ -1,6 +1,6 @@
 package com.example.cookscorner.controllers;
 
-import com.example.cookscorner.dto.response.UserResponseDTO;
+import com.example.cookscorner.dto.user.UserResponseDTO;
 import com.example.cookscorner.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

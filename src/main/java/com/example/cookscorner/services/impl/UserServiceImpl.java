@@ -1,6 +1,6 @@
 package com.example.cookscorner.services.impl;
 
-import com.example.cookscorner.dto.response.UserResponseDTO;
+import com.example.cookscorner.dto.user.UserResponseDTO;
 import com.example.cookscorner.entities.User;
 import com.example.cookscorner.exceptions.ImageUploadException;
 import com.example.cookscorner.mappers.UserMapper;

@@ -1,4 +1,4 @@
-package com.example.cookscorner.dto.request;
+package com.example.cookscorner.dto.authentication;
 
 
 import jakarta.validation.constraints.NotBlank;

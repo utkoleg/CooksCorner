@@ -1,4 +1,4 @@
-package com.example.cookscorner.dto.response;
+package com.example.cookscorner.dto.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

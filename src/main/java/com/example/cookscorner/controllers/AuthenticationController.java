@@ -1,8 +1,8 @@
 package com.example.cookscorner.controllers;
 
-import com.example.cookscorner.dto.request.AuthenticationRequest;
-import com.example.cookscorner.dto.request.RegisterRequest;
-import com.example.cookscorner.dto.response.AuthenticationResponse;
+import com.example.cookscorner.dto.authentication.AuthenticationRequest;
+import com.example.cookscorner.dto.register.RegisterRequest;
+import com.example.cookscorner.dto.authentication.AuthenticationResponse;
 import com.example.cookscorner.services.AuthenticationService;
 import com.example.cookscorner.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
