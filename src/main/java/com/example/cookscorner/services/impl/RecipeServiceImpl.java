@@ -116,14 +116,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<RecipeResponseDTO> search(String name) {
-        return recipeRepository.findByNameContaining(name).stream()
-                .map(recipeMapper)
-                .collect(Collectors.toList());
-    }
-
-
-    @Override
     public List<RecipeResponseDTO> getRecipesByCategory(String category) {
         return recipeRepository.findAllByCategory(category).stream().map(recipeMapper).toList();
     }

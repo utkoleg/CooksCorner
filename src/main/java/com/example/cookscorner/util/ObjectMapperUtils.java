@@ -28,7 +28,8 @@ public class ObjectMapperUtils {
         String author = (String) document.get("author");
         List<IngredientResponseDTO> ingredients = objectMapper.convertValue(
                 document.get("ingredients"),
-                new TypeReference<List<IngredientResponseDTO>>() {}
+                new TypeReference<>() {
+                }
         );
 
         return new RecipeResponseDTO(id, name, description, difficulty, category, preparationTime, imageUrl, ingredients, author);

@@ -1,6 +1,5 @@
 package com.example.cookscorner.dto.ingredient;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

@@ -20,6 +20,4 @@ public interface RecipeService {
     UUID saveRecipeToUser(UUID recipeId, HttpSession userId);
 
     UUID likeRecipe(UUID recipeId, HttpSession session);
-
-    List<RecipeResponseDTO> search(String name);
 }
