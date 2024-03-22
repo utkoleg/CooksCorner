@@ -5,7 +5,6 @@ import com.example.cookscorner.dto.response.RecipeResponseDTO;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.entities.User;
-import com.example.cookscorner.enums.Difficulty;
 import com.example.cookscorner.mappers.RecipeMapper;
 import com.example.cookscorner.repositories.IngredientRepository;
 import com.example.cookscorner.repositories.RecipeRepository;

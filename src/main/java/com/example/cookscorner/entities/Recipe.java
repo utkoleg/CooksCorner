@@ -1,6 +1,5 @@
 package com.example.cookscorner.entities;
 
-import com.example.cookscorner.enums.Difficulty;
 import jakarta.persistence.*;
 import lombok.*;
 

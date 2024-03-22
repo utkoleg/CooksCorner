@@ -39,7 +39,6 @@ public class ElasticSearchService {
     private static final String CLASSPATH_SETTINGS = "classpath:settings/elasticsearch-settings.json";
     private static final String CLASSPATH_MAPPINGS = "classpath:mappings/elasticsearch-dynamic-mappings.json";
 
-    private final RecipeMapper recipeMapper;
     private final RestHighLevelClient elasticsearchClient;
     private final ResourceLoader resourceLoader;
 
