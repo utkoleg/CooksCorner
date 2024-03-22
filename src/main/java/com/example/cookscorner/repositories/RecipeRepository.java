@@ -11,7 +11,6 @@ import java.util.UUID;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     List<Recipe> findAllByCategory(String category);
-
     @Query("SELECT r FROM Recipe r WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(r.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Recipe> findByNameContaining(String searchTerm);
 }

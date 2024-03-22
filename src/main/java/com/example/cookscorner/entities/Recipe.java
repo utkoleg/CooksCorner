@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "recipes")
+@ToString
 public class Recipe {
 
     @Id
@@ -24,7 +25,7 @@ public class Recipe {
 
     private String description;
 
-    private Difficulty difficulty;
+    private String difficulty;
 
     private String category;
 

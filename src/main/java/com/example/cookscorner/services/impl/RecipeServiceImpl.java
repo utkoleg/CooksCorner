@@ -10,6 +10,7 @@ import com.example.cookscorner.mappers.RecipeMapper;
 import com.example.cookscorner.repositories.IngredientRepository;
 import com.example.cookscorner.repositories.RecipeRepository;
 import com.example.cookscorner.repositories.UserRepository;
+import com.example.cookscorner.services.ElasticSearchService;
 import com.example.cookscorner.services.FileUploadService;
 import com.example.cookscorner.services.RecipeService;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,6 +34,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
     private final RecipeMapper recipeMapper;
+    private final ElasticSearchService elasticSearchService;
 
 
     @Override
@@ -58,7 +60,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipe = Recipe.builder()
                     .name(name)
                     .description(description)
-                    .difficulty(Difficulty.valueOf(difficulty.toUpperCase()))
+                    .difficulty(difficulty.toUpperCase())
                     .category(category)
                     .preparationTime(preparationTime)
                     .ingredients(ingredients)
@@ -69,7 +71,10 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RuntimeException(e);
         }
 
-        return recipeRepository.save(recipe).getId();
+        user.getRecipes().add(recipe);
+        recipeRepository.saveAndFlush(recipe);
+        elasticSearchService.saveRecipe(recipe);
+        return recipe.getId();
     }
 
     @Override

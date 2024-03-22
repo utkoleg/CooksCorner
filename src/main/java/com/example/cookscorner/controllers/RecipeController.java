@@ -3,6 +3,7 @@ package com.example.cookscorner.controllers;
 import com.example.cookscorner.dto.request.IngredientRequestDTO;
 import com.example.cookscorner.dto.response.RecipeResponseDTO;
 import com.example.cookscorner.entities.Recipe;
+import com.example.cookscorner.services.ElasticSearchService;
 import com.example.cookscorner.services.RecipeService;
 import com.example.cookscorner.wrappers.IngredientListWrapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import java.util.UUID;
 @Tag(name = "Recipe controller", description = "Endpoints for recipe management")
 public class RecipeController {
     private final RecipeService recipeService;
+    private final ElasticSearchService elasticSearchService;
 
     @GetMapping()
     @Operation(summary = "Get all recipes", responses = {
@@ -64,7 +67,7 @@ public class RecipeController {
                             content = @Content(schema = @Schema(implementation = UUID.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request data")
             })
-    public UUID addRecipe(
+    public ResponseEntity<UUID> addRecipe(
             @RequestParam("name")
             @Parameter(description = "Name of the recipe", required = true) String name,
             @RequestParam("description")
@@ -82,7 +85,7 @@ public class RecipeController {
             HttpSession session
     ) {
         List<IngredientRequestDTO> ingredientRequestDTOs = ingredientWrapper.getIngredients();
-        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image, session);
+        return ResponseEntity.ok(recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image, session));
     }
 
     @PostMapping("/save")
@@ -113,16 +116,28 @@ public class RecipeController {
         return recipeService.likeRecipe(recipeId, session);
     }
 
+//    @GetMapping("/search")
+//    @Operation(summary = "Search for recipes",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Recipes found successfully",
+//                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecipeResponseDTO.class)))),
+//                    @ApiResponse(responseCode = "404", description = "No recipes found")
+//            })
+//    public List<RecipeResponseDTO> search(
+//            @Parameter(description = "The name or description to search for in recipes") @RequestParam String name
+//    ) {
+//        return recipeService.search(name);
+//    }
+
     @GetMapping("/search")
-    @Operation(summary = "Search for recipes",
+    @Operation(summary = "Search for recipes in Elasticsearch",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Recipes found successfully",
+                    @ApiResponse(responseCode = "200", description = "List of recipes matching the search criteria",
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecipeResponseDTO.class)))),
                     @ApiResponse(responseCode = "404", description = "No recipes found")
             })
-    public List<RecipeResponseDTO> search(
-            @Parameter(description = "The name or description to search for in recipes") @RequestParam String name
-    ) {
-        return recipeService.search(name);
+    public List<Object> getElasticRecipes(@RequestParam @Parameter(description = "The name or description to search for in recipes") String name) {
+        return elasticSearchService.searchByField(name);
     }
+
 }

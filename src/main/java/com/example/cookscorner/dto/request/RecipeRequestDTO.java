@@ -27,6 +27,7 @@ public class RecipeRequestDTO {
     private String difficulty;
 
     @NotBlank(message = "Category is required")
+    @Pattern(regexp = "Breakfast|Lunch|Dinner", message = "Difficulty must be one of the following: Breakfast, Lunch, Dinner")
     private String category;
 
     @NotBlank(message = "Preparation time is required")

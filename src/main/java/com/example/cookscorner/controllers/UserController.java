@@ -75,7 +75,7 @@ public class UserController {
         return userService.unfollowUser(userToUnFollowId, session);
     }
 
-    @PutMapping("/change-name-surname")
+    @PutMapping("/change_name")
     @Operation(summary = "Change user's name", responses = {
             @ApiResponse(responseCode = "200", description = "Name changed successfully",
             content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),

@@ -64,7 +64,7 @@ public class AuthenticationController {
         return userService.activateUser(token);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/reset_password")
     @Operation(summary = "Request a password reset", responses = {
             @ApiResponse(responseCode = "200", description = "Password reset email sent"),
             @ApiResponse(responseCode = "404", description = "Email not found")
@@ -74,7 +74,7 @@ public class AuthenticationController {
         return "Password reset email sent";
     }
 
-    @PostMapping("/update-bio")
+    @PostMapping("/update_bio")
     @Operation(summary = "Update user bio", responses = {
             @ApiResponse(responseCode = "200", description = "User bio updated successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
@@ -84,7 +84,7 @@ public class AuthenticationController {
         return userService.updateBio(bio, session);
     }
 
-    @PostMapping("/update-password")
+    @PostMapping("/update_password")
     @Operation(summary = "Update user password", responses = {
             @ApiResponse(responseCode = "200", description = "Password updated successfully"),
             @ApiResponse(responseCode = "404", description = "Reset token not found or invalid")
@@ -92,8 +92,7 @@ public class AuthenticationController {
     public String updatePassword(@RequestParam(name = "token") String token, @RequestParam(name = "password") String newPassword) {
         return userService.updatePassword(token, newPassword);
     }
-
-    @PostMapping("/update-image")
+    @PostMapping("/update_image")
     @Operation(summary = "Update user profile image", responses = {
             @ApiResponse(responseCode = "200", description = "User profile image updated successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")

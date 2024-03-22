@@ -9,7 +9,7 @@ public record RecipeResponseDTO(UUID id, String name,
 
                                 String description,
 
-                                Difficulty difficulty,
+                                String difficulty,
 
                                 String category,
 
