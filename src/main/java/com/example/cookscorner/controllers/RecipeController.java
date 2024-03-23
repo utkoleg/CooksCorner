@@ -3,6 +3,7 @@ package com.example.cookscorner.controllers;
 import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
 import com.example.cookscorner.entities.Recipe;
+import com.example.cookscorner.services.CommentService;
 import com.example.cookscorner.services.ElasticSearchService;
 import com.example.cookscorner.services.RecipeService;
 import com.example.cookscorner.wrappers.IngredientListWrapper;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class RecipeController {
     private final RecipeService recipeService;
     private final ElasticSearchService elasticSearchService;
+    private final CommentService commentService;
 
     @GetMapping()
     @Operation(summary = "Get all recipes", responses = {
@@ -116,19 +118,6 @@ public class RecipeController {
         return recipeService.likeRecipe(recipeId, session);
     }
 
-//    @GetMapping("/search")
-//    @Operation(summary = "Search for recipes",
-//            responses = {
-//                    @ApiResponse(responseCode = "200", description = "Recipes found successfully",
-//                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecipeResponseDTO.class)))),
-//                    @ApiResponse(responseCode = "404", description = "No recipes found")
-//            })
-//    public List<RecipeResponseDTO> search(
-//            @Parameter(description = "The name or description to search for in recipes") @RequestParam String name
-//    ) {
-//        return recipeService.search(name);
-//    }
-
     @GetMapping("/search")
     @Operation(summary = "Search for recipes in Elasticsearch",
             responses = {
@@ -140,4 +129,13 @@ public class RecipeController {
         return elasticSearchService.searchByField(name);
     }
 
+    @PostMapping("/{id}/add-comment")
+    public ResponseEntity<UUID> addComment(
+            @PathVariable("id") UUID recipeId,
+            @RequestParam("commentText") String commentText,
+            @RequestParam("rating") Double rating,
+            HttpSession session
+    ){
+        return commentService.addComment(recipeId, commentText, session, rating);
+    }
 }

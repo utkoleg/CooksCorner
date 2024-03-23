@@ -1,6 +1,7 @@
 package com.example.cookscorner.dto.recipe;
 
 
+import com.example.cookscorner.dto.comment.CommentResponseDTO;
 import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
 
 import java.util.List;
@@ -20,5 +21,7 @@ public record RecipeResponseDTO(UUID id, String name,
 
                                 List<IngredientResponseDTO> ingredients,
 
-                                String author) {
+                                String author,
+                                List<CommentResponseDTO> comments,
+                                Double rating) {
 }

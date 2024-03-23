@@ -4,6 +4,7 @@ import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
+import com.example.cookscorner.util.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -21,17 +22,10 @@ public class RecipeMapper implements Function<Recipe, RecipeResponseDTO> {
                 recipe.getCategory(),
                 recipe.getPreparationTime(),
                 recipe.getImageUrl(),
-                recipe.getIngredients().stream().map(this::getIngredientResponseDTO).collect(Collectors.toList()),
-                recipe.getAuthor()
-        );
-    }
-
-    public IngredientResponseDTO getIngredientResponseDTO(Ingredient ingredient) {
-        return new IngredientResponseDTO(
-                ingredient.getId(),
-                ingredient.getName(),
-                ingredient.getQuantity(),
-                ingredient.getMeasurement()
+                recipe.getIngredients().stream().map(ObjectMapperUtils::fromIngredientToIngredientResponseDTO).collect(Collectors.toList()),
+                recipe.getAuthor(),
+                recipe.getComments().stream().map(ObjectMapperUtils::fromCommentToCommentResponseDTO).collect(Collectors.toList()),
+                recipe.getRating()
         );
     }
 }

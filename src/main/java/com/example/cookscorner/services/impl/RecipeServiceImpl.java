@@ -65,6 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
                     .ingredients(ingredients)
                     .imageUrl(fileUploadService.uploadFile(image))
                     .author(author)
+                    .rating(0.0)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

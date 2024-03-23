@@ -36,4 +36,9 @@ public class Recipe {
     private List<Ingredient> ingredients;
 
     private String author;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
+    private Double rating = 0.0;
 }

@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -92,16 +94,41 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         sendAddRequestElastic(recipe.getId(), ObjectMapperUtils.getJson(map));
     }
 
+    @Override
+    public void updateRecipe(Recipe recipe) {
+        try {
+            GetIndexRequest getIndexRequest = new GetIndexRequest(indexName);
+            boolean indexExists = elasticsearchClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
+
+            if (!indexExists) {
+                log.error("Index {} does not exist.", indexName);
+                return;
+            }
+
+            Map<String, Object> map = ObjectMapperUtils.fromObjectToMap(recipe);
+            String jsonRecipe = ObjectMapperUtils.getJson(map);
+            UpdateRequest updateRequest = new UpdateRequest(indexName, recipe.getId().toString())
+                    .doc(jsonRecipe, XContentType.JSON);
+
+            elasticsearchClient.update(updateRequest, RequestOptions.DEFAULT);
+            log.info("Recipe with id {} updated.", recipe.getId());
+        } catch (IOException e) {
+            log.error("Failed to update recipe with id {}. Error: {}", recipe.getId(), e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Object> searchByField(String name) {
         log.info("creating a search request to index '{}',", indexName);
         SearchRequest searchRequest = new SearchRequest(indexName);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        log.info("creating a match query");
-        boolQueryBuilder.must(QueryBuilders.matchQuery("name", name).fuzziness(Fuzziness.AUTO));
+        log.info("creating a match query for name and description");
+        BoolQueryBuilder query = QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchQuery("name", name).fuzziness(Fuzziness.AUTO).boost(2.0f))
+                .should(QueryBuilders.matchQuery("description", name).fuzziness(Fuzziness.AUTO));
 
-        sourceBuilder.query(boolQueryBuilder);
+        sourceBuilder.query(query);
         searchRequest.source(sourceBuilder);
 
         try {
@@ -115,4 +142,5 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
             throw new RuntimeException(e);
         }
     }
+
 }

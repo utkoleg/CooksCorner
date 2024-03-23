@@ -1,7 +1,10 @@
 package com.example.cookscorner.util;
 
+import com.example.cookscorner.dto.comment.CommentResponseDTO;
 import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.example.cookscorner.entities.Comment;
+import com.example.cookscorner.entities.Ingredient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +18,14 @@ public class ObjectMapperUtils {
 
     public static Map<String, Object> fromObjectToMap(Object object) {
         return objectMapper.convertValue(object, new TypeReference<>() {});
+    }
+
+    public static CommentResponseDTO fromCommentToCommentResponseDTO(Comment comment){
+        return objectMapper.convertValue(comment, CommentResponseDTO.class);
+    }
+
+    public static IngredientResponseDTO fromIngredientToIngredientResponseDTO(Ingredient ingredient){
+        return objectMapper.convertValue(ingredient, IngredientResponseDTO.class);
     }
 
     public static RecipeResponseDTO fromObjectToRecipeResponseDTO(Map<String, Object> document) {
@@ -31,8 +42,14 @@ public class ObjectMapperUtils {
                 new TypeReference<>() {
                 }
         );
+        List<CommentResponseDTO> comments = objectMapper.convertValue(
+                document.get("comments"),
+                new TypeReference<>() {
+                }
+        );
+        Double rating = (Double) document.get("rating");
 
-        return new RecipeResponseDTO(id, name, description, difficulty, category, preparationTime, imageUrl, ingredients, author);
+        return new RecipeResponseDTO(id, name, description, difficulty, category, preparationTime, imageUrl, ingredients, author, comments, rating);
     }
 
     public static String getJson(Map<String, Object> data) {
