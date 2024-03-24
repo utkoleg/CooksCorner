@@ -3,6 +3,7 @@ package com.example.cookscorner.controllers;
 import com.example.cookscorner.dto.authentication.AuthenticationRequest;
 import com.example.cookscorner.dto.register.RegisterRequest;
 import com.example.cookscorner.dto.authentication.AuthenticationResponse;
+import com.example.cookscorner.entities.CustomResponse;
 import com.example.cookscorner.services.AuthenticationService;
 import com.example.cookscorner.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,10 +36,10 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data")
     })
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<CustomResponse> register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        return authenticationService.register(request);
     }
 
 
@@ -48,11 +49,11 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<CustomResponse> register(
             @RequestBody AuthenticationRequest request,
             HttpSession session
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request, session));
+        return authenticationService.authenticate(request, session);
     }
 
     @GetMapping("/activate")
@@ -60,7 +61,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "User account activated successfully"),
             @ApiResponse(responseCode = "404", description = "Activation token not found or invalid")
     })
-    public String verifyUser(@RequestParam("token") String token) {
+    public ResponseEntity<CustomResponse> verifyUser(@RequestParam("token") String token) {
         return userService.activateUser(token);
     }
 
@@ -69,19 +70,8 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Password reset email sent"),
             @ApiResponse(responseCode = "404", description = "Email not found")
     })
-    public String resetPassword(@RequestParam(name = "email") String email) {
-        userService.sendPasswordResetEmail(email);
-        return "Password reset email sent";
-    }
-
-    @PostMapping("/update_bio")
-    @Operation(summary = "Update user bio", responses = {
-            @ApiResponse(responseCode = "200", description = "User bio updated successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    public String updateBio(@RequestParam(name = "bio") String bio,
-                            HttpSession session){
-        return userService.updateBio(bio, session);
+    public ResponseEntity<CustomResponse> resetPassword(@RequestParam(name = "email") String email) {
+        return userService.sendPasswordResetEmail(email);
     }
 
     @PostMapping("/update_password")
@@ -89,25 +79,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Password updated successfully"),
             @ApiResponse(responseCode = "404", description = "Reset token not found or invalid")
     })
-    public String updatePassword(@RequestParam(name = "token") String token, @RequestParam(name = "password") String newPassword) {
+    public ResponseEntity<CustomResponse> updatePassword(@RequestParam(name = "token") String token, @RequestParam(name = "password") String newPassword) {
         return userService.updatePassword(token, newPassword);
-    }
-    @PostMapping("/update_image")
-    @Operation(summary = "Update user profile image", responses = {
-            @ApiResponse(responseCode = "200", description = "User profile image updated successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    public UUID updateImage(@RequestParam(name = "image") MultipartFile image,
-                              HttpSession session){
-        return userService.updateImage(image, session);
-    }
-
-    @PostMapping("/logout")
-    @Operation(summary = "Log out a user", responses = {
-            @ApiResponse(responseCode = "200", description = "User logged out successfully")
-    })
-    public ResponseEntity<String> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok("User logged out.");
     }
 }

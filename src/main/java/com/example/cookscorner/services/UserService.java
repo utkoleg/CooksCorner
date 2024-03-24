@@ -1,32 +1,32 @@
 package com.example.cookscorner.services;
 
 import com.example.cookscorner.dto.user.UserResponseDTO;
+import com.example.cookscorner.entities.CustomResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
-    String activateUser(String token);
+    ResponseEntity<CustomResponse> activateUser(String token);
 
-    void sendPasswordResetEmail(String email);
+    ResponseEntity<CustomResponse> sendPasswordResetEmail(String email);
 
-    String updatePassword(String token, String newPassword);
+    ResponseEntity<CustomResponse> updatePassword(String token, String newPassword);
 
-    String updateBio(String bio, HttpSession id);
+    ResponseEntity<CustomResponse> updateBio(String bio, HttpSession session);
 
-    UUID updateImage(MultipartFile image, HttpSession id);
+    ResponseEntity<CustomResponse> updateImage(MultipartFile image, HttpSession session);
 
     UserResponseDTO getUser(UUID id);
 
-    UserResponseDTO followUser(UUID id, HttpSession userId);
+    ResponseEntity<CustomResponse> toggleFollowUser(UUID id, HttpSession session);
 
     List<UserResponseDTO> getUsers();
 
-    UserResponseDTO unfollowUser(UUID userToUnFollowId, HttpSession userId);
-
     UserResponseDTO getProfile(HttpSession session);
 
-    UserResponseDTO changeNameSurname(String name, String surname, HttpSession session);
+    ResponseEntity<CustomResponse> changeNameSurname(String name, String surname, HttpSession session);
 }

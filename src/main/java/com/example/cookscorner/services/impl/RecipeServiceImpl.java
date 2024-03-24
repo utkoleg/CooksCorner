@@ -2,9 +2,11 @@ package com.example.cookscorner.services.impl;
 
 import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.example.cookscorner.entities.CustomResponse;
 import com.example.cookscorner.entities.Ingredient;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.entities.User;
+import com.example.cookscorner.exceptions.UserNotFoundException;
 import com.example.cookscorner.mappers.RecipeMapper;
 import com.example.cookscorner.repositories.IngredientRepository;
 import com.example.cookscorner.repositories.RecipeRepository;
@@ -17,6 +19,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.recycler.Recycler;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,9 +47,9 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public UUID addRecipe(String name, String description, String difficulty, String category,
-                          String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs,
-                          MultipartFile image, HttpSession session) {
+    public ResponseEntity<CustomResponse> addRecipe(String name, String description, String difficulty, String category,
+                                                    String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs,
+                                                    MultipartFile image, HttpSession session) {
 
         List<Ingredient> ingredients = ingredientRequestDTOs.stream()
                 .map(this::convertToIngredient)
@@ -53,8 +58,8 @@ public class RecipeServiceImpl implements RecipeService {
         ingredientRepository.saveAll(ingredients);
         Recipe recipe;
         UUID userId = (UUID) session.getAttribute("authorizedUserId");
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        String author = user.getName() + " " + user.getSurname();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("id", String.valueOf(userId)));
+        String author = user.getUsername();
         try {
             recipe = Recipe.builder()
                     .name(name)
@@ -74,46 +79,49 @@ public class RecipeServiceImpl implements RecipeService {
         user.getRecipes().add(recipe);
         recipeRepository.saveAndFlush(recipe);
         elasticSearchService.saveRecipe(recipe);
-        return recipe.getId();
+        return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Recipe added successfully"), HttpStatus.OK);
     }
 
     @Override
     @Transactional
-    public UUID saveRecipeToUser(UUID recipeId, HttpSession session) {
+    public ResponseEntity<CustomResponse> saveRecipeToUser(UUID recipeId, HttpSession session) {
         Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
-        User userTemp = (User) session.getAttribute("authorizedUser");
-        User user = userRepository.findById(userTemp.getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Recipe not found with id: %s", recipeId)));
+
+        UUID userId = (UUID) session.getAttribute("authorizedUserId");
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("id", String.valueOf(userId)));
 
         if (!user.getSavedRecipes().contains(recipe)) {
             user.getSavedRecipes().add(recipe);
+            userRepository.save(user);
             log.info("Recipe saved");
+            return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Recipe saved"), HttpStatus.OK);
         } else {
             user.getSavedRecipes().remove(recipe);
+            userRepository.save(user);
             log.info("Recipe unsaved");
+            return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Recipe unsaved"), HttpStatus.OK);
         }
-
-        userRepository.save(user);
-        return user.getId();
     }
 
     @Override
-    public UUID likeRecipe(UUID recipeId, HttpSession session) {
+    public ResponseEntity<CustomResponse> likeRecipe(UUID recipeId, HttpSession session) {
         Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
-        User userTemp = (User) session.getAttribute("authorizedUser");
-        User user = userRepository.findById(userTemp.getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Recipe not found with id: %s", recipeId)));
+        UUID userId = (UUID) session.getAttribute("authorizedUserId");
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("id", String.valueOf(userId)));
 
         if (user.getLikedRecipes().contains(recipe)) {
             user.getLikedRecipes().remove(recipe);
+            userRepository.save(user);
             log.info("recipe unliked");
+            return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Recipe unliked"), HttpStatus.OK);
         } else {
             user.getLikedRecipes().add(recipe);
+            userRepository.save(user);
             log.info("recipe liked");
+            return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Recipe liked"), HttpStatus.OK);
         }
-
-        userRepository.save(user);
-        return user.getId();
     }
 
     @Override

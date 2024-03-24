@@ -2,6 +2,7 @@ package com.example.cookscorner.controllers;
 
 import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.example.cookscorner.entities.CustomResponse;
 import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.services.CommentService;
 import com.example.cookscorner.services.ElasticSearchService;
@@ -62,14 +63,14 @@ public class RecipeController {
     }
 
 
-    @PostMapping()
+    @PostMapping("/add_recipe")
     @Operation(summary = "Add a new recipe",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recipe added successfully",
                             content = @Content(schema = @Schema(implementation = UUID.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request data")
             })
-    public ResponseEntity<UUID> addRecipe(
+    public ResponseEntity<CustomResponse> addRecipe(
             @RequestParam("name")
             @Parameter(description = "Name of the recipe", required = true) String name,
             @RequestParam("description")
@@ -87,7 +88,7 @@ public class RecipeController {
             HttpSession session
     ) {
         List<IngredientRequestDTO> ingredientRequestDTOs = ingredientWrapper.getIngredients();
-        return ResponseEntity.ok(recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image, session));
+        return recipeService.addRecipe(name, description, difficulty, category, preparationTime, ingredientRequestDTOs, image, session);
     }
 
     @PostMapping("/save")
@@ -97,7 +98,7 @@ public class RecipeController {
                             content = @Content(schema = @Schema(implementation = UUID.class))),
                     @ApiResponse(responseCode = "404", description = "Recipe or user not found")
             })
-    public UUID saveRecipe(
+    public ResponseEntity<CustomResponse> saveRecipe(
             @Parameter(description = "The ID of the recipe to save") @RequestParam UUID recipeId,
             HttpSession session
     ) {
@@ -111,7 +112,7 @@ public class RecipeController {
                             content = @Content(schema = @Schema(implementation = UUID.class))),
                     @ApiResponse(responseCode = "404", description = "Recipe or user not found")
             })
-    public UUID likeRecipe(
+    public ResponseEntity<CustomResponse> likeRecipe(
             @Parameter(description = "The ID of the recipe to like") @RequestParam UUID recipeId,
             HttpSession session
     ) {

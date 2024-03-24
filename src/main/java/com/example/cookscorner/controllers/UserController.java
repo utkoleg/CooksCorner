@@ -1,6 +1,8 @@
 package com.example.cookscorner.controllers;
 
 import com.example.cookscorner.dto.user.UserResponseDTO;
+import com.example.cookscorner.entities.CustomResponse;
+import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -10,7 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +37,7 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     @Operation(summary = "Get user details", responses = {
             @ApiResponse(responseCode = "200", description = "User details",
                     content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
@@ -53,39 +57,14 @@ public class UserController {
         return userService.getProfile(session);
     }
 
-    @PostMapping("/{userToFollowId}")
-    @Operation(summary = "Follow a user", responses = {
+    @PostMapping("/users/{userToFollowId}")
+    @Operation(summary = "Follow or unfollow user", responses = {
             @ApiResponse(responseCode = "200", description = "User followed successfully",
                     content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public UserResponseDTO followUser(@PathVariable(name = "userToFollowId") UUID userToFollowId,
-                                      HttpSession session){
-        return userService.followUser(userToFollowId, session);
-    }
-
-    @PostMapping("/{userToUnFollowId}/unfollow")
-    @Operation(summary = "Unfollow a user", responses = {
-            @ApiResponse(responseCode = "200", description = "User unfollowed successfully",
-                    content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    public UserResponseDTO unfollowUser(@PathVariable(name = "userToUnFollowId") UUID userToUnFollowId,
-                                        HttpSession session){
-        return userService.unfollowUser(userToUnFollowId, session);
-    }
-
-    @PutMapping("/change_name")
-    @Operation(summary = "Change user's name", responses = {
-            @ApiResponse(responseCode = "200", description = "Name changed successfully",
-            content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    public UserResponseDTO changeNameSurname(
-            @RequestParam("name") String name,
-            @RequestParam("surname") String surname,
-            HttpSession session
-    ){
-        return userService.changeNameSurname(name, surname, session);
+    public ResponseEntity<CustomResponse> followUser(@PathVariable(name = "userToFollowId") UUID userToFollowId,
+                                                     HttpSession session){
+        return userService.toggleFollowUser(userToFollowId, session);
     }
 }

@@ -3,7 +3,6 @@ server:
   servlet:
     session:
       timeout: 60m  # Session timeout
-
 spring:
   servlet:
     multipart:

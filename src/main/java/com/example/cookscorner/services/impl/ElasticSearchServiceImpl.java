@@ -142,5 +142,4 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
             throw new RuntimeException(e);
         }
     }
-
 }

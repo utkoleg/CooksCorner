@@ -25,8 +25,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/cookscorner/**", "/cookscorner/recipe/**", "/logout").permitAll()
-                        .requestMatchers("/cookscorner/users/**").authenticated()
+                        .requestMatchers("/cookscorner/users/**", "/cookscorner/auth/**", "/cookscorner/recipe/search", "/logout", "cookscorner/recipe", "/cookscorner/recipe/category", "/cookscorner/recipe/{id}").permitAll()
+                        .requestMatchers("cookscorner/recipe/**", "cookscorner/profile", "cookscorner/users/{userToFollowId}", "cookscorner/settings/**").authenticated()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )

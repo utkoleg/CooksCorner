@@ -2,7 +2,9 @@ package com.example.cookscorner.services;
 
 import com.example.cookscorner.dto.ingredient.IngredientRequestDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.example.cookscorner.entities.CustomResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,9 +17,9 @@ public interface RecipeService {
 
     RecipeResponseDTO getRecipe(UUID id);
 
-    UUID addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image, HttpSession session);
+    ResponseEntity<CustomResponse> addRecipe(String name, String description, String difficulty, String category, String preparationTime, List<IngredientRequestDTO> ingredientRequestDTOs, MultipartFile image, HttpSession session);
 
-    UUID saveRecipeToUser(UUID recipeId, HttpSession userId);
+    ResponseEntity<CustomResponse> saveRecipeToUser(UUID recipeId, HttpSession userId);
 
-    UUID likeRecipe(UUID recipeId, HttpSession session);
+    ResponseEntity<CustomResponse> likeRecipe(UUID recipeId, HttpSession session);
 }
