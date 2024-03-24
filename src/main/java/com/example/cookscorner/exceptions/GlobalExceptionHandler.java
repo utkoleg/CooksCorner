@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<?> handleMessagingException(MessagingException ex) {
-        return new ResponseEntity<>(new CustomResponse(HttpStatus.SERVICE_UNAVAILABLE, "Email service error"), HttpStatus.SERVICE_UNAVAILABLE);
+        return new ResponseEntity<>(new CustomResponse(HttpStatus.SERVICE_UNAVAILABLE, "Email service error" + ex.getMessage()), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

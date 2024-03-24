@@ -2,7 +2,6 @@ package com.example.cookscorner.controllers;
 
 import com.example.cookscorner.dto.user.UserResponseDTO;
 import com.example.cookscorner.entities.CustomResponse;
-import com.example.cookscorner.entities.Recipe;
 import com.example.cookscorner.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +13,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;

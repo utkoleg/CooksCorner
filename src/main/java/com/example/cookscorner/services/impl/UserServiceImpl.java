@@ -11,7 +11,6 @@ import com.example.cookscorner.repositories.UserRepository;
 import com.example.cookscorner.services.EmailService;
 import com.example.cookscorner.services.FileUploadService;
 import com.example.cookscorner.services.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +100,7 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             throw new ImageUploadException("Failed to upload image", e);
         }
-        userRepository.save(user).getId();
+        userRepository.save(user);
         return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Image updated"), HttpStatus.OK);
     }
 
