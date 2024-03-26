@@ -23,11 +23,6 @@ spring:
       ddl-auto: update
     show-sql: true
 
-#  liquibase:
-#    change-log: db/changelog/liquibase-changelog.xml
-#    database-change-log-table: changelog_${spring.application.name}
-#    database-change-log-lock-table: changelog_lock_${spring.application.name}
-
   mail:
     host: smtp.gmail.com
     port: 587

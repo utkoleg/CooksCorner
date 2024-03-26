@@ -22,7 +22,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+            http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/cookscorner/users/**", "/cookscorner/auth/**", "/cookscorner/recipe/search", "/logout", "cookscorner/recipe", "/cookscorner/recipe/category", "/cookscorner/recipe/{id}").permitAll()

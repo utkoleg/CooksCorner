@@ -43,51 +43,6 @@ services:
       - "9300:9300"
     restart: unless-stopped
 
-#  elasticsearch:
-#    image: elasticsearch:7.16.2
-#    environment:
-#      ES_JAVA_OPTS: "-Xmx512m -Xms256m"
-#      ELASTIC_PASSWORD: elastic
-#      discovery.type: single-node
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    restart: unless-stopped
-#    volumes:
-#      - elasticsearch:/usr/share/elasticsearch/data
-
-#  logstash:
-#    image: logstash:7.16.2
-#    ports:
-#      - "5001:5001"
-#      - "9600:9600"
-#    environment:
-#      LS_JAVA_OPTS: "-Xmx512m -Xms256m"
-#      ELASTIC_USER: elastic
-#      ELASTIC_PASSWORD: elastic
-#      XPACK_MONITORING_ELASTICSEARCH_USERNAME: elastic
-#      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: elastic
-#      XPACK_MONITORING_ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-#      XPACK_MONITORING_ENABLED: "true"
-#    restart: unless-stopped
-#    depends_on:
-#      - elasticsearch
-#    volumes:
-#      - "./pipeline:/usr/share/logstash/pipeline"
-#
-#  kibana:
-#    image: kibana:7.16.2
-#    environment:
-#      ELASTICSEARCH_USERNAME: elastic
-#      ELASTICSEARCH_PASSWORD: elastic
-#      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
-#    ports:
-#      - "5601:5601"
-#    restart: unless-stopped
-#    depends_on:
-#      - elasticsearch
-#      - logstash
-
 volumes:
   db-data:
   elasticsearch:

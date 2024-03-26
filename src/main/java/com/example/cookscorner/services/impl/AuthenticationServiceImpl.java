@@ -92,5 +92,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         session.setAttribute("authorizedUserId", user.getId());
         return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Authenticated with token: " + jwtToken), HttpStatus.OK);
     }
-
 }
