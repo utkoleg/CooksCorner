@@ -3,8 +3,10 @@ package com.example.cookscorner.util;
 import com.example.cookscorner.dto.comment.CommentResponseDTO;
 import com.example.cookscorner.dto.ingredient.IngredientResponseDTO;
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.example.cookscorner.dto.user.UserResponseDTO;
 import com.example.cookscorner.entities.Comment;
 import com.example.cookscorner.entities.Ingredient;
+import com.example.cookscorner.entities.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +22,9 @@ public class ObjectMapperUtils {
         return objectMapper.convertValue(object, new TypeReference<>() {});
     }
 
+    public static UserResponseDTO fromUserToUserResponseDTO(User user){
+        return objectMapper.convertValue(user, UserResponseDTO.class);
+    }
     public static CommentResponseDTO fromCommentToCommentResponseDTO(Comment comment){
         return objectMapper.convertValue(comment, CommentResponseDTO.class);
     }

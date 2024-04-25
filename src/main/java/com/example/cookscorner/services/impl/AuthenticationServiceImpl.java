@@ -2,7 +2,9 @@ package com.example.cookscorner.services.impl;
 
 import com.example.cookscorner.config.JwtService;
 import com.example.cookscorner.dto.authentication.AuthenticationRequest;
+import com.example.cookscorner.dto.authentication.AuthenticationResponse;
 import com.example.cookscorner.dto.register.RegisterRequest;
+import com.example.cookscorner.entities.CustomAuthenticateResponse;
 import com.example.cookscorner.entities.CustomResponse;
 import com.example.cookscorner.entities.User;
 import com.example.cookscorner.enums.Role;
@@ -12,6 +14,7 @@ import com.example.cookscorner.exceptions.UserNotFoundException;
 import com.example.cookscorner.repositories.UserRepository;
 import com.example.cookscorner.services.AuthenticationService;
 import com.example.cookscorner.services.EmailService;
+import com.example.cookscorner.util.ObjectMapperUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<CustomResponse> authenticate(AuthenticationRequest request, HttpSession session) {
+    public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request, HttpSession session) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -90,6 +93,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         session.setAttribute("authorizedUser", user);
         session.setAttribute("authorizedUserId", user.getId());
-        return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Authenticated with token: " + jwtToken), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthenticationResponse(jwtToken), HttpStatus.OK);
     }
 }

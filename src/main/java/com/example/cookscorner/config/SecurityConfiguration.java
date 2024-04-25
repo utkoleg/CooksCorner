@@ -11,7 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/cookscorner/users/**", "/cookscorner/auth/**", "/cookscorner/recipe/search", "/logout", "cookscorner/recipe", "/cookscorner/recipe/category", "/cookscorner/recipe/{id}").permitAll()
-                        .requestMatchers("cookscorner/recipe/**", "cookscorner/profile", "cookscorner/users/{userToFollowId}", "cookscorner/settings/**").authenticated()
+                        .requestMatchers("cookscorner/recipe/**", "cookscorner/profile", "cookscorner/users/{userToFollowId}", "cookscorner/settings/**", "cookscorner/payment/**").authenticated()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )

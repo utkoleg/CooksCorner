@@ -29,4 +29,6 @@ public interface UserService {
     UserResponseDTO getProfile(HttpSession session);
 
     ResponseEntity<CustomResponse> changeNameSurname(String name, String surname, HttpSession session);
+
+    void updateUserSubscriptionStatus(HttpSession session, boolean isSubscribed);
 }

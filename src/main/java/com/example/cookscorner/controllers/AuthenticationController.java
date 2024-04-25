@@ -3,6 +3,7 @@ package com.example.cookscorner.controllers;
 import com.example.cookscorner.dto.authentication.AuthenticationRequest;
 import com.example.cookscorner.dto.register.RegisterRequest;
 import com.example.cookscorner.dto.authentication.AuthenticationResponse;
+import com.example.cookscorner.entities.CustomAuthenticateResponse;
 import com.example.cookscorner.entities.CustomResponse;
 import com.example.cookscorner.services.AuthenticationService;
 import com.example.cookscorner.services.UserService;
@@ -46,7 +47,7 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
-    public ResponseEntity<CustomResponse> register(
+    public ResponseEntity<AuthenticationResponse> register(
             @RequestBody AuthenticationRequest request,
             HttpSession session
     ) {

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -151,6 +152,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return new ResponseEntity<>(new CustomResponse(HttpStatus.OK, "Named changed"), HttpStatus.OK);
+    }
+
+    @Override
+    public void updateUserSubscriptionStatus(HttpSession session, boolean isSubscribed) {
+        UUID userId = (UUID) session.getAttribute("authorizedUserId");
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("id", userId.toString()));
+        user.setIsSubscribed(isSubscribed);
+
+        if (isSubscribed) {
+            user.setSubscriptionEndDate(LocalDateTime.now().plusDays(30));
+        } else {
+            user.setSubscriptionEndDate(null);
+        }
+
+        userRepository.save(user);
     }
 
     @Override

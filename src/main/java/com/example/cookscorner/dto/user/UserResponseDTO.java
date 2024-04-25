@@ -2,10 +2,12 @@ package com.example.cookscorner.dto.user;
 
 
 import com.example.cookscorner.dto.recipe.RecipeResponseDTO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record UserResponseDTO(UUID id,
 
                               String username,

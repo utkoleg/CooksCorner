@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +65,10 @@ public class User implements UserDetails {
 
     private String surname;
 
+    private Boolean isSubscribed = false;
+
+    private LocalDateTime subscriptionEndDate;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -96,10 +101,8 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.enabled; // Return the enabled status for the user
+        return this.enabled;
     }
-
-    // Generate a verification token for the user
     public void generateActivationToken() {
         this.activationToken = UUID.randomUUID().toString();
     }

@@ -49,6 +49,10 @@ management:
       exposure:
         include: "*"
 
+paypal:
+  client_id: "Aa0d0nMBJQlwx0QmdwHf1_aFNKblm6-U7BDWLmv9UlCr3eJnYyLGej6jUKU0mNPg5zR7H0xQGbpFrwYp"
+  client_secret: "EF-eLKt3k3-EWh_ecCHEQEJjCBp-M35cvzLOU2kj7SPKbyi1W56G3MelzEQV4qqnyF9Lf1fbh_gxQfmA"
+  mode: "sandbox"
 
 
 app:
